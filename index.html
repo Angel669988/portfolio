@@ -709,6 +709,183 @@ body {
   font-weight: 600;
 }
 
+/* ===== Demo 5 · RAG 评测对比 ===== */
+.demo5-query-box {
+  background: var(--bg-secondary);
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  margin-bottom: 18px;
+  font-size: 13px;
+  border-left: 3px solid var(--text-tertiary);
+}
+
+.demo5-query-box strong {
+  color: var(--text-primary);
+}
+
+.demo5-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.eval-panel {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.eval-panel-header {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.eval-panel-tag {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.tag-system {
+  background: #d6e8f5;
+  color: var(--info);
+}
+
+.tag-business {
+  background: #fef3d7;
+  color: var(--warning);
+}
+
+.eval-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.eval-panel-subtitle {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.eval-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  opacity: 0;
+  border-left: 3px solid var(--border);
+  transition: border-color 0.3s;
+}
+
+.eval-metric.show {
+  opacity: 1;
+  animation: slideUp 0.4s forwards;
+}
+
+.eval-metric.pass {
+  border-left-color: var(--success);
+}
+
+.eval-metric.fail {
+  border-left-color: var(--accent);
+}
+
+.metric-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.metric-value {
+  font-family: "SF Mono", Monaco, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metric-value.pass {
+  color: var(--success);
+}
+
+.metric-value.fail {
+  color: var(--accent);
+}
+
+.metric-detail {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.eval-conclusion {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 0.5px dashed var(--border-strong);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.eval-conclusion.show {
+  opacity: 1;
+}
+
+.conclusion-pass {
+  color: var(--success);
+}
+
+.conclusion-fail {
+  color: var(--accent);
+}
+
+.demo5-insight {
+  margin-top: 20px;
+  padding: 18px 22px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+
+.demo5-insight.show {
+  opacity: 1;
+}
+
+.demo5-insight-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.demo5-insight-content {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.demo5-insight-content strong {
+  color: var(--text-primary);
+}
+
+
 /* ===== 底部 ===== */
 .footer {
   margin-top: 80px;
@@ -1160,17 +1337,77 @@ body {
   </div>
 </section>
 
+<!-- ===== Demo 5 · RAG 评测对比 ===== -->
+<section class="section">
+  <div class="section-eyebrow">PART 02 · 产品判断 · DEMO 5</div>
+  <h2 class="section-title">中台系统评测 vs 应用层业务评测</h2>
+  <p class="section-desc">同一次 RAG 调用，中台说"成功"，应用层说"失败"——这是大厂中台架构下，应用层 PM 必须建立的独立评测视角。点击"运行评测"看真实差异。</p>
+
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-number">DEMO 05</div>
+      <div class="demo-title">应用层 PM 在中台黑盒下的剩余价值</div>
+      <div class="demo-judgement">
+        <strong>我的判断：</strong>"调用是黑盒"不等于"应用是黑盒"。中台给的是水龙头——<strong>水龙头怎么打开、什么时候打开、水流出来后怎么用、水质好不好怎么评估</strong>——这一整套都是应用层 PM 的核心战场。
+      </div>
+    </div>
+
+    <div class="demo5-query-box">
+      <strong>真实 case：</strong>用户输入 "帮我写一份内审岗位的简历，我是大四学生"<br>
+      <strong>中台 RAG 召回：</strong>10 条 "内审岗位画像" 相关内容（但全是内审经理 / 审计总监等资深岗位）
+    </div>
+
+    <div class="demo-controls">
+      <button class="btn" onclick="demo5.start()">运行评测</button>
+      <button class="btn btn-secondary" onclick="demo5.reset()">重置</button>
+    </div>
+
+    <div class="demo5-grid">
+      <div class="eval-panel">
+        <div class="eval-panel-header">
+          <span class="eval-panel-tag tag-system">中台视角</span>
+          <div class="eval-panel-title">系统级评测</div>
+          <div class="eval-panel-subtitle">召回率 / 精确率 / 延迟 / 向量相似度</div>
+        </div>
+        <div id="d5-system-metrics"></div>
+        <div class="eval-conclusion" id="d5-system-conclusion"></div>
+      </div>
+
+      <div class="eval-panel">
+        <div class="eval-panel-header">
+          <span class="eval-panel-tag tag-business">应用层视角</span>
+          <div class="eval-panel-title">业务级评测</div>
+          <div class="eval-panel-subtitle">这次 RAG 调用对用户真的有用吗？</div>
+        </div>
+        <div id="d5-business-metrics"></div>
+        <div class="eval-conclusion" id="d5-business-conclusion"></div>
+      </div>
+    </div>
+
+    <div class="demo5-insight" id="d5-insight">
+      <div class="demo5-insight-title">关键洞察 · 这是应用层 PM 的核心战场</div>
+      <div class="demo5-insight-content">
+        中台说成功，业务说失败——<strong>这个差距就是应用层 PM 的存在价值</strong>。<br><br>
+        在中台架构下，PM 不需要重新设计 RAG 内部机制，但必须建立独立的业务评测：
+        <strong>身份匹配度 · 垂直度 · 场景隔离 · 调用决策合理性 · 业务增量价值</strong>——这五个维度中台不会替你测，每一个都直接影响最终用户体验。<br><br>
+        <strong>"做透业务级评测" = 应用层 PM 在中台架构下的不可替代位置</strong>。
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- ===== 底部 ===== -->
 <div class="footer">
   <p><strong>Angel</strong> · AI Native PM @ 通义千问</p>
   <p>这份作品集展示了我对 AI Office Agent 这个方向的整体认知和具体产品判断。</p>
   <p>每个 demo 都是一次可交互的产品判断陈述——欢迎面试时一起讨论。</p>
   <p style="margin-top: 20px; font-size: 11px; color: var(--text-tertiary); line-height: 1.7;">
-        本页面为可交互作品集，所有 demo 均为产品判断的可视化演示，不代表生产环境真实数据。
-    </p>
-    <p style="margin-top: 8px; font-size: 11px; color: var(--text-tertiary); line-height: 1.7;">
-        本作品集涉及的底层组件（如 RAG 检索、向量化、模型调用）在实际生产中由阿里中台统一提供；本文档侧重应用层 PM 的产品判断与系统设计。
-    </p>
+    本页面为可交互作品集，所有 demo 均为产品判断的可视化演示，不代表生产环境真实数据。
+  </p>
+  <p style="margin-top: 8px; font-size: 11px; color: var(--text-tertiary); line-height: 1.7;">
+    本作品集涉及的底层组件（如 RAG 检索、向量化、模型调用）在实际生产中由阿里中台统一提供；本文档侧重应用层 PM 的产品判断与系统设计。
+  </p>
 </div>
 
 </div>
@@ -1441,6 +1678,101 @@ const demo4 = (function() {
 
   return { start, reset };
 })();
+
+// ===== Demo 5: 中台 vs 应用层评测 =====
+const demo5 = (function() {
+  const systemMetrics = [
+    { name: '召回率', value: '92%', pass: true, detail: '召回 9/10 相关内容' },
+    { name: '精确率', value: '88%', pass: true, detail: 'top-k 中相关比例高' },
+    { name: '检索延迟', value: '180ms', pass: true, detail: '远低于 500ms 阈值' },
+    { name: '向量相似度', value: '0.87', pass: true, detail: 'cosine 相似度高' }
+  ];
+
+  const businessMetrics = [
+    { name: '身份匹配度', value: '✗ 失败', pass: false, detail: '召回的全是"内审经理 / 审计总监"——应届生用不上' },
+    { name: '垂直度合理性', value: '✗ 失败', pass: false, detail: '未区分内审 / 外审 / IT审计 细分场景' },
+    { name: '场景隔离', value: '○ 部分', pass: false, detail: '混入了若干"内审经理招聘 JD" 类内容' },
+    { name: '调用决策合理性', value: '✓ 通过', pass: true, detail: '此场景确实需要 RAG' },
+    { name: '业务增量价值', value: '✗ 失败', pass: false, detail: '生成的简历用户改动率 75%——RAG 用了和没用差不多' }
+  ];
+
+  let timers = [];
+
+  function reset() {
+    timers.forEach(t => clearTimeout(t));
+    timers = [];
+    document.getElementById('d5-system-metrics').innerHTML = '';
+    document.getElementById('d5-business-metrics').innerHTML = '';
+    const sysConc = document.getElementById('d5-system-conclusion');
+    const bizConc = document.getElementById('d5-business-conclusion');
+    const insight = document.getElementById('d5-insight');
+    sysConc.classList.remove('show');
+    bizConc.classList.remove('show');
+    insight.classList.remove('show');
+    sysConc.innerHTML = '';
+    bizConc.innerHTML = '';
+  }
+
+  function start() {
+    reset();
+    
+    // 左侧系统评测：依次显示，全部通过（绿色）
+    systemMetrics.forEach((m, idx) => {
+      timers.push(setTimeout(() => {
+        const container = document.getElementById('d5-system-metrics');
+        const div = document.createElement('div');
+        div.className = 'eval-metric show ' + (m.pass ? 'pass' : 'fail');
+        div.innerHTML = `
+          <div>
+            <div class="metric-name">${m.name}</div>
+            <div class="metric-detail">${m.detail}</div>
+          </div>
+          <div class="metric-value ${m.pass ? 'pass' : 'fail'}">${m.value}</div>
+        `;
+        container.appendChild(div);
+      }, 400 * (idx + 1)));
+    });
+
+    // 左侧结论
+    timers.push(setTimeout(() => {
+      const conc = document.getElementById('d5-system-conclusion');
+      conc.className = 'eval-conclusion show conclusion-pass';
+      conc.innerHTML = '✓ 系统级评测：全部通过<br><span style="font-size: 10px; color: var(--text-tertiary); font-weight: normal;">中台报告：此次 RAG 调用成功</span>';
+    }, 2000));
+
+    // 右侧业务评测：依次显示，多数失败（红色）
+    businessMetrics.forEach((m, idx) => {
+      timers.push(setTimeout(() => {
+        const container = document.getElementById('d5-business-metrics');
+        const div = document.createElement('div');
+        div.className = 'eval-metric show ' + (m.pass ? 'pass' : 'fail');
+        div.innerHTML = `
+          <div>
+            <div class="metric-name">${m.name}</div>
+            <div class="metric-detail">${m.detail}</div>
+          </div>
+          <div class="metric-value ${m.pass ? 'pass' : 'fail'}">${m.value}</div>
+        `;
+        container.appendChild(div);
+      }, 2500 + 400 * idx));
+    });
+
+    // 右侧结论
+    timers.push(setTimeout(() => {
+      const conc = document.getElementById('d5-business-conclusion');
+      conc.className = 'eval-conclusion show conclusion-fail';
+      conc.innerHTML = '✗ 业务级评测：4/5 维度失败<br><span style="font-size: 10px; color: var(--text-tertiary); font-weight: normal;">应用层判断：此次 RAG 调用对用户无价值</span>';
+    }, 5000));
+
+    // 底部洞察框
+    timers.push(setTimeout(() => {
+      document.getElementById('d5-insight').classList.add('show');
+    }, 5600));
+  }
+
+  return { start, reset };
+})();
+
 </script>
 
 </body>
