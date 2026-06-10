@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Native PM 作品集 · Angel</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #faf9f7;
+  --bg-card: #ffffff;
+  --bg-secondary: #f3f1ed;
+  --border: #e8e4dc;
+  --border-strong: #d4cfc4;
+  --text-primary: #1a1816;
+  --text-secondary: #5a564f;
+  --text-tertiary: #908a7e;
+  --accent: #c14a1d;
+  --accent-soft: #f5e8e0;
+  --success: #2d6a3f;
+  --warning: #b8861f;
+  --info: #1e5a8d;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 60px 32px 80px;
+}
+
+/* ===== 顶部开场区 ===== */
+.hero {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.tags {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border-strong);
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.hero-title {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.hero-tagline {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+.hero-meta {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+/* ===== 章节通用 ===== */
+.section {
+  margin-bottom: 64px;
+}
+
+.section-eyebrow {
+  font-size: 12px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+.section-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  max-width: 720px;
+}
+
+/* ===== 思考摘要卡片 ===== */
+.thinking-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.thinking-card p {
+  margin-bottom: 14px;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.thinking-card p:last-child {
+  margin-bottom: 0;
+}
+
+.thinking-card strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== 架构图区 ===== */
+.architecture-frame {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.architecture-frame svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.arch-note {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ===== Demo 卡片 ===== */
+.demo-card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.demo-header {
+  margin-bottom: 20px;
+}
+
+.demo-number {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.demo-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
+}
+
+.demo-judgement {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--text-tertiary);
+}
+
+.demo-judgement strong {
+  color: var(--text-primary);
+}
+
+/* ===== Demo 通用控件 ===== */
+.demo-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.demo-input-display {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  min-width: 200px;
+}
+
+.demo-input-display strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.btn {
+  background: var(--text-primary);
+  color: var(--bg-card);
+  border: none;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 0.5px solid var(--border-strong);
+}
+
+/* ===== Demo 1 · 整段 vs 分段 ===== */
+.demo1-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.panel {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.status-badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+
+.status-idle { background: #e8e4dc; color: var(--text-tertiary); }
+.status-loading { background: #fef3d7; color: var(--warning); }
+.status-done { background: #d7ecdd; color: var(--success); }
+
+.output-area {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 320px;
+  font-size: 12px;
+  line-height: 1.6;
+  padding-right: 4px;
+}
+
+.placeholder {
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 80px 0;
+  font-size: 12px;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 60px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--info);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.doc-section {
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.doc-title {
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+
+.doc-body {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.outline-card {
+  background: var(--bg-card);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  font-size: 11px;
+  border: 0.5px solid var(--border);
+}
+
+.outline-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.outline-item {
+  color: var(--text-secondary);
+  padding: 2px 0;
+}
+
+.confirm-hint {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--accent);
+  padding: 4px 8px;
+  background: var(--accent-soft);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.stat-box {
+  background: var(--bg-secondary);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stat-highlight {
+  color: var(--success);
+}
+
+/* ===== Demo 2 · 静默 vs 显式 ===== */
+.demo2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.resume-mock {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  font-size: 12px;
+  min-height: 320px;
+  position: relative;
+}
+
+.resume-mock h4 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.resume-field {
+  margin-bottom: 10px;
+}
+
+.field-label {
+  color: var(--text-tertiary);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.field-value {
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.field-value-highlight {
+  background: linear-gradient(120deg, #fef3d7 0%, #fef3d7 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 60%;
+  background-position: 0 90%;
+  padding: 0 3px;
+  border: 1px dashed var(--warning);
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.silent-badge, .explicit-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+
+.silent-badge {
+  background: #ffe5dc;
+  color: var(--accent);
+}
+
+.explicit-badge {
+  background: #d7ecdd;
+  color: var(--success);
+}
+
+.surprise-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #ffe5dc;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0;
+  animation: fadeIn 0.5s 6s forwards;
+}
+
+.action-hint {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--accent-soft);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0;
+  animation: fadeIn 0.5s 2s forwards;
+}
+
+/* ===== Demo 3 · 四象限处理 ===== */
+.demo3-content {
+  margin-top: 12px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 120px;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 0.5px solid var(--border);
+  align-items: center;
+  font-size: 13px;
+  transition: background 0.3s;
+}
+
+.field-row:hover {
+  background: var(--bg-secondary);
+}
+
+.field-row:last-child {
+  border-bottom: none;
+}
+
+.field-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.field-action {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.field-action.ai-direct {
+  color: var(--info);
+}
+
+.field-action.ai-suggest {
+  color: var(--warning);
+}
+
+.field-action.placeholder-tag {
+  color: var(--text-tertiary);
+}
+
+.field-action.ask-user {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.quadrant-tag {
+  text-align: center;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+
+.q1 { background: #d6e8f5; color: var(--info); }
+.q2 { background: #fef3d7; color: var(--warning); }
+.q3 { background: #e8e4dc; color: var(--text-tertiary); }
+.q4 { background: #ffe5dc; color: var(--accent); }
+
+.batch-ask-box {
+  margin-top: 20px;
+  padding: 18px 22px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.batch-ask-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.batch-ask-content {
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ===== Demo 4 · 指代消解 ===== */
+.chat-container {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.chat-msg {
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: slideUp 0.4s forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.msg-user {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.msg-user .bubble {
+  background: var(--text-primary);
+  color: var(--bg-card);
+  padding: 8px 14px;
+  border-radius: 16px 16px 4px 16px;
+  font-size: 13px;
+  max-width: 70%;
+}
+
+.msg-ai {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.msg-ai .bubble {
+  background: var(--bg-card);
+  padding: 10px 14px;
+  border-radius: 16px 16px 16px 4px;
+  font-size: 13px;
+  max-width: 75%;
+  border: 0.5px solid var(--border);
+}
+
+.resolution-trace {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+  padding: 6px 10px;
+  background: rgba(193, 74, 29, 0.08);
+  border-radius: 4px;
+  max-width: 75%;
+  border-left: 2px solid var(--accent);
+  font-family: "SF Mono", Monaco, monospace;
+}
+
+.resolution-trace strong {
+  color: var(--accent);
+}
+
+.state-panel {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 11px;
+  font-family: "SF Mono", Monaco, monospace;
+  margin-top: 12px;
+  border: 0.5px dashed var(--border-strong);
+}
+
+.state-panel-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.state-line {
+  color: var(--text-secondary);
+  margin-bottom: 3px;
+  transition: color 0.3s;
+}
+
+.state-line .key {
+  color: var(--info);
+}
+
+.state-line.updated {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== 底部 ===== */
+.footer {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 0.5px solid var(--border);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.8;
+}
+
+.footer strong {
+  color: var(--text-secondary);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 720px) {
+  .container { padding: 40px 20px 60px; }
+  .hero-title { font-size: 28px; }
+  .section-title { font-size: 22px; }
+  .demo1-grid, .demo2-grid { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; gap: 6px; }
+  .stats-row { grid-template-columns: 1fr; }
+}
+
+.scroll-hint {
+  text-align: center;
+  margin-top: 40px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ===== 顶部开场 ===== -->
+<section class="hero">
+  <div class="tags">
+    <span class="tag">架构思维</span>
+    <span class="tag">系统设计</span>
+    <span class="tag">产品判断</span>
+  </div>
+  <h1 class="hero-title">把模糊的产品判断<br>转化为清晰的系统结构</h1>
+  <p class="hero-tagline">AI Native PM @ 通义千问 · AI Office Agent 方向<br>这是一份可交互的产品判断展示。请点开每个 Demo 亲身体验。</p>
+  <p class="hero-meta">Angel · 2026</p>
+</section>
+
+<div class="scroll-hint">─── 我在思考什么 ───</div>
+
+<!-- ===== 思考摘要 ===== -->
+<section class="section" style="margin-top: 40px;">
+  <div class="thinking-card">
+    <p>我做的是 Word/PDF Agent——让用户用一句话或多轮对话，就能完成文档生成、解析、编辑这类办公场景。</p>
+    <p>这件事让我意识到——做 AI 产品，<strong>PM 真正的杠杆不是写更详细的 PRD，而是设计清晰的"系统决策结构"</strong>：什么让模型做、什么让代码做、什么交给用户。</p>
+    <p>这份作品集展示三件事——<strong>我对整体架构的认知 · 我做过的核心系统设计 · 我在具体产品判断上的取舍</strong>。</p>
+  </div>
+</section>
+
+<!-- ===== 架构总览 ===== -->
+<section class="section">
+  <div class="section-eyebrow">PART 01 · 整体架构</div>
+  <h2 class="section-title">六层 + 三贯穿 + 哲学底座</h2>
+  <p class="section-desc">我把 Word/PDF Agent 拆成六个垂直执行层 + 三大横向贯穿能力 + 产品哲学底座。垂直层负责执行，贯穿能力负责支撑，哲学底座负责定义"什么是对的"。</p>
+
+  <div class="architecture-frame">
+    <svg width="100%" viewBox="0 0 900 1280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow-arch" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#5a564f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <text x="450" y="32" text-anchor="middle" font-size="18" font-weight="600" fill="#1a1816">Word/PDF Agent · 完整主架构</text>
+      <text x="450" y="52" text-anchor="middle" font-size="12" fill="#5a564f">六层垂直执行 + 三大横向贯穿 + 产品哲学底座</text>
+
+      <!-- 左侧 Eval 贯穿条 -->
+      <rect x="30" y="100" width="90" height="900" rx="12" fill="#fef3d7" stroke="#b8861f" stroke-width="1"/>
+      <text x="75" y="135" text-anchor="middle" font-size="13" font-weight="600" fill="#854f0b">Eval</text>
+      <text x="75" y="155" text-anchor="middle" font-size="13" font-weight="600" fill="#854f0b">驱动迭代</text>
+
+      <rect x="40" y="820" width="70" height="34" rx="4" fill="#fef3d7" stroke="#b8861f" stroke-width="0.5" opacity="0.7"/>
+      <text x="75" y="839" text-anchor="middle" font-size="11" fill="#854f0b">评测集</text>
+      <rect x="40" y="860" width="70" height="34" rx="4" fill="#fef3d7" stroke="#b8861f" stroke-width="0.5" opacity="0.7"/>
+      <text x="75" y="879" text-anchor="middle" font-size="11" fill="#854f0b">维度拆解</text>
+      <rect x="40" y="900" width="70" height="34" rx="4" fill="#fef3d7" stroke="#b8861f" stroke-width="0.5" opacity="0.7"/>
+      <text x="75" y="919" text-anchor="middle" font-size="11" fill="#854f0b">Bad Case</text>
+      <rect x="40" y="940" width="70" height="34" rx="4" fill="#fef3d7" stroke="#b8861f" stroke-width="0.5" opacity="0.7"/>
+      <text x="75" y="959" text-anchor="middle" font-size="11" fill="#854f0b">回归测试</text>
+
+      <!-- 右上 Memory -->
+      <rect x="780" y="100" width="90" height="440" rx="12" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="1"/>
+      <text x="825" y="135" text-anchor="middle" font-size="13" font-weight="600" fill="#185fa5">Memory</text>
+      <text x="825" y="155" text-anchor="middle" font-size="13" font-weight="600" fill="#185fa5">系统</text>
+
+      <rect x="790" y="180" width="70" height="34" rx="4" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="199" text-anchor="middle" font-size="11" fill="#185fa5">会话状态</text>
+      <rect x="790" y="220" width="70" height="34" rx="4" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="239" text-anchor="middle" font-size="11" fill="#185fa5">用户偏好</text>
+      <rect x="790" y="260" width="70" height="34" rx="4" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="279" text-anchor="middle" font-size="11" fill="#185fa5">跨会话</text>
+      <rect x="790" y="300" width="70" height="34" rx="4" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="319" text-anchor="middle" font-size="11" fill="#185fa5">隐私边界</text>
+
+      <!-- 右下 可观测性 -->
+      <rect x="780" y="560" width="90" height="440" rx="12" fill="#ffe5dc" stroke="#c14a1d" stroke-width="1"/>
+      <text x="825" y="595" text-anchor="middle" font-size="13" font-weight="600" fill="#993c1d">可观测性</text>
+
+      <rect x="790" y="640" width="70" height="34" rx="4" fill="#ffe5dc" stroke="#c14a1d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="659" text-anchor="middle" font-size="11" fill="#993c1d">全链路日志</text>
+      <rect x="790" y="680" width="70" height="34" rx="4" fill="#ffe5dc" stroke="#c14a1d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="699" text-anchor="middle" font-size="11" fill="#993c1d">工具追踪</text>
+      <rect x="790" y="720" width="70" height="34" rx="4" fill="#ffe5dc" stroke="#c14a1d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="739" text-anchor="middle" font-size="11" fill="#993c1d">成本延迟</text>
+      <rect x="790" y="760" width="70" height="34" rx="4" fill="#ffe5dc" stroke="#c14a1d" stroke-width="0.5" opacity="0.7"/>
+      <text x="825" y="779" text-anchor="middle" font-size="11" fill="#993c1d">错误归因</text>
+
+      <!-- 中间垂直流 -->
+      <rect x="290" y="100" width="320" height="40" rx="8" fill="#f3f1ed" stroke="#908a7e" stroke-width="0.5"/>
+      <text x="450" y="120" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1816">用户输入</text>
+      <line x1="450" y1="140" x2="450" y2="162" stroke="#5a564f" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+
+      <!-- L1 -->
+      <rect x="160" y="167" width="580" height="70" rx="10" fill="#e8d6f0" stroke="#7a3f9c" stroke-width="0.5"/>
+      <text x="450" y="190" text-anchor="middle" font-size="13" font-weight="600" fill="#5a2d7d">L1 · 意图理解层</text>
+      <text x="450" y="212" text-anchor="middle" font-size="11" fill="#5a2d7d">三维意图识别 · 会话状态对象 · 多轮漂移与指代消解</text>
+      <line x1="450" y1="237" x2="450" y2="259" stroke="#5a564f" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+
+      <!-- L2 -->
+      <rect x="160" y="264" width="580" height="70" rx="10" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5"/>
+      <text x="450" y="287" text-anchor="middle" font-size="13" font-weight="600" fill="#185fa5">L2 · 知识与配置层</text>
+      <text x="450" y="309" text-anchor="middle" font-size="11" fill="#185fa5">Schema 字段属性库 · 三层模板系统 · 领域知识与 RAG 数据源</text>
+      <line x1="450" y1="334" x2="450" y2="356" stroke="#5a564f" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+
+      <!-- L3 -->
+      <rect x="160" y="361" width="580" height="70" rx="10" fill="#d4ebe5" stroke="#2d7a6b" stroke-width="0.5"/>
+      <text x="450" y="384" text-anchor="middle" font-size="13" font-weight="600" fill="#1f5e51">L3 · 上下文工程层</text>
+      <text x="450" y="406" text-anchor="middle" font-size="11" fill="#1f5e51">R3 信息不全策略 · RAG 检索与排序 · Context 组装避免 LIM</text>
+      <line x1="450" y1="431" x2="450" y2="453" stroke="#5a564f" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+
+      <!-- L4 -->
+      <rect x="160" y="458" width="580" height="70" rx="10" fill="#f5d6e5" stroke="#a8285f" stroke-width="1"/>
+      <text x="450" y="481" text-anchor="middle" font-size="13" font-weight="600" fill="#7d1f47">L4 · ReAct 编排层 ⭐</text>
+      <text x="450" y="503" text-anchor="middle" font-size="11" fill="#7d1f47">工具集设计 · Thought-Action-Observation 循环 · 四层工具评测</text>
+      <line x1="450" y1="528" x2="450" y2="550" stroke="#5a564f" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+
+      <!-- L5 -->
+      <rect x="160" y="555" width="580" height="70" rx="10" fill="#fef3d7" stroke="#b8861f" stroke-width="0.5"/>
+      <text x="450" y="578" text-anchor="middle" font-size="13" font-weight="600" fill="#854f0b">L5 · 校验与降级层</text>
+      <text x="450" y="600" text-anchor="middle" font-size="11" fill="#854f0b">规则 + 模型 + 用户三种校验 · 分层降级 · 高风险点用户确认</text>
+      <line x1="450" y1="625" x2="450" y2="647" stroke="#5a564f" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+
+      <!-- L6 -->
+      <rect x="160" y="652" width="580" height="70" rx="10" fill="#ffe5dc" stroke="#c14a1d" stroke-width="0.5"/>
+      <text x="450" y="675" text-anchor="middle" font-size="13" font-weight="600" fill="#993c1d">L6 · 渲染与反馈层</text>
+      <text x="450" y="697" text-anchor="middle" font-size="11" fill="#993c1d">Word/PDF 渲染 · 显式+隐式反馈采集 · Bad Case 入评测集</text>
+      <line x1="450" y1="722" x2="450" y2="744" stroke="#5a564f" stroke-width="1.5" marker-end="url(#arrow-arch)"/>
+
+      <!-- 最终交付 -->
+      <rect x="290" y="749" width="320" height="50" rx="8" fill="#f3f1ed" stroke="#908a7e" stroke-width="0.5"/>
+      <text x="450" y="767" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1816">最终交付</text>
+      <text x="450" y="785" text-anchor="middle" font-size="11" fill="#5a564f">Word/PDF + 待确认事项 + 操作选项</text>
+
+      <!-- 贯穿说明虚框 -->
+      <rect x="160" y="830" width="580" height="160" rx="12" fill="none" stroke="#908a7e" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <text x="450" y="855" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1816">三大贯穿能力如何穿过六层</text>
+
+      <circle cx="185" cy="881" r="4" fill="#854f0b"/>
+      <text x="195" y="885" font-size="12" font-weight="600" fill="#854f0b">Eval</text>
+      <text x="240" y="885" font-size="11" fill="#5a564f">贯穿 L1→L6 每层都有独立评测 整体健康度 = 各层乘积</text>
+
+      <circle cx="185" cy="911" r="4" fill="#185fa5"/>
+      <text x="195" y="915" font-size="12" font-weight="600" fill="#185fa5">Memory</text>
+      <text x="260" y="915" font-size="11" fill="#5a564f">影响 L1→L3 让产品有熟人感 用户画像 + 偏好 + 历史</text>
+
+      <circle cx="185" cy="941" r="4" fill="#993c1d"/>
+      <text x="195" y="945" font-size="12" font-weight="600" fill="#993c1d">可观测性</text>
+      <text x="270" y="945" font-size="11" fill="#5a564f">支撑 L4→L6 全链路追踪让 PM 基于数据迭代而非拍脑袋</text>
+
+      <text x="180" y="975" font-size="11" font-weight="600" fill="#1a1816">核心:</text>
+      <text x="220" y="975" font-size="11" fill="#5a564f">垂直层负责执行 · 贯穿能力负责支撑 · 缺一不可</text>
+
+      <!-- 哲学底座 -->
+      <rect x="30" y="1020" width="840" height="120" rx="12" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="1"/>
+      <text x="450" y="1048" text-anchor="middle" font-size="13" font-weight="600" fill="#185fa5">底座 · 产品哲学</text>
+      <text x="450" y="1068" text-anchor="middle" font-size="11" fill="#185fa5">所有架构决策的最终依据</text>
+
+      <rect x="60" y="1085" width="180" height="40" rx="6" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5"/>
+      <text x="150" y="1108" text-anchor="middle" font-size="11" fill="#185fa5">事实不能编</text>
+      <rect x="255" y="1085" width="180" height="40" rx="6" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5"/>
+      <text x="345" y="1108" text-anchor="middle" font-size="11" fill="#185fa5">透明 &gt; 完美</text>
+      <rect x="450" y="1085" width="180" height="40" rx="6" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5"/>
+      <text x="540" y="1108" text-anchor="middle" font-size="11" fill="#185fa5">用户始终在决策位</text>
+      <rect x="645" y="1085" width="200" height="40" rx="6" fill="#d6e8f5" stroke="#1e5a8d" stroke-width="0.5"/>
+      <text x="745" y="1108" text-anchor="middle" font-size="11" fill="#185fa5">能用代码就不用模型</text>
+
+      <!-- 三大原则 -->
+      <rect x="30" y="1165" width="840" height="100" rx="12" fill="none" stroke="#908a7e" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <text x="50" y="1188" font-size="12" font-weight="600" fill="#1a1816">⭐ 贯穿全图的三大设计原则</text>
+      <text x="50" y="1213" font-size="11" fill="#5a564f">1. 配置 vs 代码分离 —— 业务知识入配置 让 PM 拥有定义权</text>
+      <text x="50" y="1235" font-size="11" fill="#5a564f">2. 显式 vs 隐式决策 —— 关键决策点显式化为工具调用 可追踪可评测</text>
+      <text x="50" y="1257" font-size="11" fill="#5a564f">3. 循环 vs 闭环 —— 单次任务靠循环 长期进化靠闭环</text>
+    </svg>
+  </div>
+
+  <div class="arch-note">
+    <strong>30 秒讲完这张图的方式</strong>——中间六层是执行流，从意图理解到渲染反馈；两侧是支撑能力（Eval 贯穿全六层、Memory 影响输入端、可观测性支撑执行端）；底部是产品哲学，所有架构决策的最终依据。<strong>垂直层负责执行，贯穿能力负责支撑，缺一不可</strong>。
+  </div>
+</section>
+
+<div class="scroll-hint">─── 可交互的产品判断展示 ───</div>
+
+<!-- ===== Demo 1 · 整段 vs 分段 ===== -->
+<section class="section" style="margin-top: 40px;">
+  <div class="section-eyebrow">PART 02 · 产品判断 · DEMO 1</div>
+  <h2 class="section-title">整段生成 vs 大纲先行 + 分段</h2>
+  <p class="section-desc">长文档生成场景下，"AI 一次性输出完整结果" 和 "AI 边规划边输出"——哪种用户体验更好？请点击"开始生成"亲身体验差异。</p>
+
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-number">DEMO 01</div>
+      <div class="demo-title">长文档生成的两种交互模式</div>
+      <div class="demo-judgement">
+        <strong>我的判断：</strong>两种模式的总耗时其实差不多——但用户感知的"等待时间"完全不同。AI 产品里，<strong>"感知时长" 比 "实际时长" 更值得优化</strong>。
+      </div>
+    </div>
+
+    <div class="demo-controls">
+      <div class="demo-input-display">
+        <strong>用户输入：</strong>"帮我写一份内审岗位求职指南，6 个章节"
+      </div>
+      <button class="btn" onclick="demo1.start()">开始生成</button>
+      <button class="btn btn-secondary" onclick="demo1.reset()">重置</button>
+    </div>
+
+    <div class="demo1-grid">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">模式 A · 整段生成</span>
+          <span class="status-badge status-idle" id="d1-status-a">待开始</span>
+        </div>
+        <div class="output-area" id="d1-output-a">
+          <div class="placeholder">等待开始...</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">模式 B · 大纲先行 + 分段</span>
+          <span class="status-badge status-idle" id="d1-status-b">待开始</span>
+        </div>
+        <div class="output-area" id="d1-output-b">
+          <div class="placeholder">等待开始...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">首屏可见</div>
+        <div class="stat-value"><span id="d1-first-a">-</span> vs <span id="d1-first-b" class="stat-highlight">-</span></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">全部完成</div>
+        <div class="stat-value"><span id="d1-done-a">-</span> vs <span id="d1-done-b">-</span></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">体验差距</div>
+        <div class="stat-value" id="d1-diff">-</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Demo 2 · 静默猜测 vs 显式标注 ===== -->
+<section class="section">
+  <div class="section-eyebrow">PART 02 · 产品判断 · DEMO 2</div>
+  <h2 class="section-title">AI 静默猜测 vs 显式标注</h2>
+  <p class="section-desc">用户的输入信息不完整时，AI 该怎么处理？这两种处理方式 6 秒后会看到完全不同的结局。</p>
+
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-number">DEMO 02</div>
+      <div class="demo-title">不确定信息的两种处理哲学</div>
+      <div class="demo-judgement">
+        <strong>我的判断：</strong>让用户看见 AI 在猜什么，比让 AI 看起来很笃定，更可靠。<strong>透明度 &gt; 完美感</strong>——这是我做 AI 产品的核心哲学之一。
+      </div>
+    </div>
+
+    <div class="demo-controls">
+      <div class="demo-input-display">
+        <strong>用户输入：</strong>"刘孟嵩，在校生，求内审岗位，已取得相关证书"
+      </div>
+      <button class="btn" onclick="demo2.start()">生成简历</button>
+      <button class="btn btn-secondary" onclick="demo2.reset()">重置</button>
+    </div>
+
+    <div class="demo2-grid">
+      <div class="resume-mock" id="d2-silent">
+        <span class="silent-badge">静默猜测</span>
+        <h4>简历预览</h4>
+        <div id="d2-silent-content">
+          <div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>
+        </div>
+      </div>
+
+      <div class="resume-mock" id="d2-explicit">
+        <span class="explicit-badge">显式标注</span>
+        <h4>简历预览</h4>
+        <div id="d2-explicit-content">
+          <div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Demo 3 · 四象限处理 ===== -->
+<section class="section">
+  <div class="section-eyebrow">PART 02 · 产品判断 · DEMO 3</div>
+  <h2 class="section-title">信息不全的四象限处理策略</h2>
+  <p class="section-desc">同样是 AI 不知道的信息，按"业务重要性 × 可推断性"两个维度分类，每种字段走完全不同的处理路径。</p>
+
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-number">DEMO 03</div>
+      <div class="demo-title">字段不是平等的——分类处理才是产品判断</div>
+      <div class="demo-judgement">
+        <strong>我的判断：</strong>用户的所有信息缺失看似都一样，但<strong>本质完全不同</strong>。设计统一的"反问机制" 是糟糕产品；设计分类的"差异化处理"才是 AI Native PM 该做的事。
+      </div>
+    </div>
+
+    <div class="demo3-content">
+      <div class="field-row" style="background: var(--bg-secondary); font-weight: 600; font-size: 12px;">
+        <div>字段</div>
+        <div>处理动作</div>
+        <div style="text-align: center;">象限分类</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">章节顺序</div>
+        <div class="field-action ai-direct">AI 直接选择应届生模板，不打扰用户</div>
+        <div><span class="quadrant-tag q1">① 合理默认</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">字体配色</div>
+        <div class="field-action ai-direct">AI 用模板预设，不打扰用户</div>
+        <div><span class="quadrant-tag q1">① 合理默认</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">自我评价</div>
+        <div class="field-action ai-suggest">AI 起草 + 标注"AI 建议草稿"</div>
+        <div><span class="quadrant-tag q2">② 智能建议</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">技能描述</div>
+        <div class="field-action ai-suggest">基于岗位推荐 + 标注"根据岗位生成"</div>
+        <div><span class="quadrant-tag q2">② 智能建议</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">兴趣爱好</div>
+        <div class="field-action placeholder-tag">留 [可选填] 占位符，不阻塞流程</div>
+        <div><span class="quadrant-tag q3">③ 占位符</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">英语等级</div>
+        <div class="field-action placeholder-tag">留 [请补充] 占位符</div>
+        <div><span class="quadrant-tag q3">③ 占位符</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">学校 · 专业 · 学历</div>
+        <div class="field-action ask-user">必须反问 · 绝不凭空编造</div>
+        <div><span class="quadrant-tag q4">④ 必须反问</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">联系方式</div>
+        <div class="field-action ask-user">必须反问 · 简历核心功能</div>
+        <div><span class="quadrant-tag q4">④ 必须反问</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">具体证书名称</div>
+        <div class="field-action ask-user">必须反问 · CIA / CPA / 初级会计</div>
+        <div><span class="quadrant-tag q4">④ 必须反问</span></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-name">实习经历</div>
+        <div class="field-action ask-user">必须反问 · 允许"暂无"作为答案</div>
+        <div><span class="quadrant-tag q4">④ 必须反问</span></div>
+      </div>
+    </div>
+
+    <div class="batch-ask-box">
+      <div class="batch-ask-title">最终反问话术 · 批量而不是逐个挤牙膏</div>
+      <div class="batch-ask-content">
+        "为了帮你生成准确的简历，我需要补充几个关键信息：<br>
+        1. 你的学校和专业是？<br>
+        2. 学历层级（本科 / 硕士）？<br>
+        3. 联系方式（手机 / 邮箱）？<br>
+        4. 你说的"相关证书"具体是 CIA / 初级会计师 / 审计师证 哪一个？<br>
+        5. 有相关实习经历吗？（没有也没关系，可以用校园项目代替）<br><br>
+        你可以一次性回复，也可以填写其中能确定的部分。"
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Demo 4 · 多轮指代消解 ===== -->
+<section class="section">
+  <div class="section-eyebrow">PART 02 · 产品判断 · DEMO 4</div>
+  <h2 class="section-title">多轮对话中的指代消解</h2>
+  <p class="section-desc">用户多轮对话里频繁使用"它""那段""刚才的"——AI 如何知道指代的是什么？请点击"播放对话"看完整流程。</p>
+
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-number">DEMO 04</div>
+      <div class="demo-title">状态对象 + 指代消解的实战过程</div>
+      <div class="demo-judgement">
+        <strong>我的判断：</strong>多轮对话能力的本质是<strong>状态对象 + 指代消解</strong>——前者是"地图"，后者是"在地图上找一个点"。没有地图就没有指代。
+      </div>
+    </div>
+
+    <div class="demo-controls">
+      <button class="btn" onclick="demo4.start()">播放对话</button>
+      <button class="btn btn-secondary" onclick="demo4.reset()">重置</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px;">
+      <div class="chat-container" id="d4-chat">
+        <div class="placeholder" style="padding: 100px 0;">点击"播放对话"开始</div>
+      </div>
+
+      <div class="state-panel" id="d4-state">
+        <div class="state-panel-title">会话状态对象</div>
+        <div style="color: var(--text-tertiary); padding: 50px 0; text-align: center; font-size: 11px;">
+          状态会随对话实时更新
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 底部 ===== -->
+<div class="footer">
+  <p><strong>Angel</strong> · AI Native PM @ 通义千问</p>
+  <p>这份作品集展示了我对 AI Office Agent 这个方向的整体认知和具体产品判断。</p>
+  <p>每个 demo 都是一次可交互的产品判断陈述——欢迎面试时一起讨论。</p>
+  <p style="margin-top: 20px; font-size: 11px; color: var(--text-tertiary);">
+    本页面为可交互作品集，所有 demo 均为产品判断的可视化演示，不代表生产环境真实数据。
+  </p>
+</div>
+
+</div>
+
+<script>
+// ===== Demo 1: 整段 vs 分段 =====
+const demo1 = (function() {
+  const sections = [
+    { title: "第1章 内审岗位概览", body: "内部审计是企业治理的重要环节，岗位职责涵盖合规检查、风险评估、流程优化三大方向。" },
+    { title: "第2章 核心能力要求", body: "需要财务知识、合规意识、数据分析能力以及独立判断力，缺一不可。" },
+    { title: "第3章 必备资格证书", body: "CIA、CPA、初级会计师证是内审岗位的常见敲门砖，应届生至少要有一个。" },
+    { title: "第4章 简历准备技巧", body: "应当突出审计相关实习、参与过的合规项目、量化的工作成果。" },
+    { title: "第5章 面试常见问题", body: "面试官常问：你如何处理与被审计部门的冲突？请举例说明你发现风险的经历。" },
+    { title: "第6章 职业发展路径", body: "从初级审计员到审计经理通常需要 3-5 年，再到 CAE 需要 8-10 年。" }
+  ];
+  const outline = ["1. 内审岗位概览", "2. 核心能力要求", "3. 必备资格证书", "4. 简历准备技巧", "5. 面试常见问题", "6. 职业发展路径"];
+
+  let startTime = 0, firstA = null, firstB = null, doneA = null, doneB = null;
+  let timers = [];
+
+  function setStatus(id, text, klass) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'status-badge ' + klass;
+  }
+
+  function fmt(ms) { return (ms / 1000).toFixed(1) + 's'; }
+
+  function reset() {
+    timers.forEach(t => clearTimeout(t));
+    timers = [];
+    document.getElementById('d1-output-a').innerHTML = '<div class="placeholder">等待开始...</div>';
+    document.getElementById('d1-output-b').innerHTML = '<div class="placeholder">等待开始...</div>';
+    setStatus('d1-status-a', '待开始', 'status-idle');
+    setStatus('d1-status-b', '待开始', 'status-idle');
+    ['d1-first-a', 'd1-first-b', 'd1-done-a', 'd1-done-b', 'd1-diff'].forEach(id => {
+      document.getElementById(id).textContent = '-';
+    });
+    firstA = firstB = doneA = doneB = null;
+  }
+
+  function start() {
+    reset();
+    startTime = Date.now();
+    runA();
+    runB();
+  }
+
+  function runA() {
+    const out = document.getElementById('d1-output-a');
+    setStatus('d1-status-a', '生成中', 'status-loading');
+    out.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>正在生成完整文档...</span></div>';
+    timers.push(setTimeout(() => {
+      firstA = doneA = Date.now() - startTime;
+      let html = '';
+      sections.forEach(s => {
+        html += '<div class="doc-section" style="animation: none; opacity: 1;"><div class="doc-title">' + s.title + '</div><div class="doc-body">' + s.body + '</div></div>';
+      });
+      out.innerHTML = html;
+      setStatus('d1-status-a', '完成', 'status-done');
+      document.getElementById('d1-first-a').textContent = fmt(firstA);
+      document.getElementById('d1-done-a').textContent = fmt(doneA);
+      updateDiff();
+    }, 8000));
+  }
+
+  function runB() {
+    const out = document.getElementById('d1-output-b');
+    setStatus('d1-status-b', '生成大纲', 'status-loading');
+    out.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>生成大纲中...</span></div>';
+    timers.push(setTimeout(() => {
+      firstB = Date.now() - startTime;
+      document.getElementById('d1-first-b').textContent = fmt(firstB);
+      let outlineHtml = '<div class="outline-card"><div class="outline-title">📋 文档大纲</div>';
+      outline.forEach(item => outlineHtml += '<div class="outline-item">' + item + '</div>');
+      outlineHtml += '<div class="confirm-hint">↳ 用户可在此确认或调整大纲</div></div>';
+      out.innerHTML = outlineHtml;
+      setStatus('d1-status-b', '分段生成', 'status-loading');
+      sections.forEach((s, idx) => {
+        timers.push(setTimeout(() => {
+          const div = document.createElement('div');
+          div.className = 'doc-section';
+          div.innerHTML = '<div class="doc-title">' + s.title + '</div><div class="doc-body">' + s.body + '</div>';
+          out.appendChild(div);
+          out.scrollTop = out.scrollHeight;
+          if (idx === sections.length - 1) {
+            doneB = Date.now() - startTime;
+            setStatus('d1-status-b', '完成', 'status-done');
+            document.getElementById('d1-done-b').textContent = fmt(doneB);
+            updateDiff();
+          }
+        }, 1100 * (idx + 1)));
+      });
+    }, 1200));
+  }
+
+  function updateDiff() {
+    if (firstA && firstB) {
+      document.getElementById('d1-diff').textContent = 'B 首屏快 ' + (firstA / firstB).toFixed(1) + 'x';
+    }
+  }
+
+  return { start, reset };
+})();
+
+// ===== Demo 2: 静默 vs 显式 =====
+const demo2 = (function() {
+  let timers = [];
+
+  function reset() {
+    timers.forEach(t => clearTimeout(t));
+    timers = [];
+    document.getElementById('d2-silent-content').innerHTML = '<div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>';
+    document.getElementById('d2-explicit-content').innerHTML = '<div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>';
+  }
+
+  function start() {
+    reset();
+    // 模式 A: 静默猜测 - 直接生成完整简历，看起来很完美
+    timers.push(setTimeout(() => {
+      document.getElementById('d2-silent-content').innerHTML = `
+        <div class="resume-field">
+          <div class="field-label">姓名</div>
+          <div class="field-value">刘孟嵩</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">求职岗位</div>
+          <div class="field-value">内部审计</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">学校</div>
+          <div class="field-value">中央财经大学</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">专业</div>
+          <div class="field-value">审计学</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">专业证书</div>
+          <div class="field-value">CIA 注册内部审计师</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">联系方式</div>
+          <div class="field-value">138****8888 / liu@example.com</div>
+        </div>
+      `;
+      // 6 秒后揭示问题
+      timers.push(setTimeout(() => {
+        const surprise = document.createElement('div');
+        surprise.className = 'surprise-note';
+        surprise.innerHTML = '<strong>⚠ 实际情况：</strong>用户不在中央财经，专业不是审计学，证书是初级会计师而不是 CIA——AI 全编了。用户简历投出后才发现，已经造成事故。';
+        document.getElementById('d2-silent-content').appendChild(surprise);
+      }, 4000));
+    }, 800));
+
+    // 模式 B: 显式标注 - 该问的问，该标的标
+    timers.push(setTimeout(() => {
+      document.getElementById('d2-explicit-content').innerHTML = `
+        <div class="resume-field">
+          <div class="field-label">姓名</div>
+          <div class="field-value">刘孟嵩</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">求职岗位</div>
+          <div class="field-value">内部审计</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">学校</div>
+          <div class="field-value field-value-highlight">[请填写学校名]</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">专业</div>
+          <div class="field-value field-value-highlight">[请填写专业]</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">专业证书</div>
+          <div class="field-value field-value-highlight">[待确认：CIA / CPA / 初级会计师]</div>
+        </div>
+        <div class="resume-field">
+          <div class="field-label">联系方式</div>
+          <div class="field-value field-value-highlight">[请填写手机/邮箱]</div>
+        </div>
+        <div class="action-hint">
+          ↳ 黄色标注的 4 个字段需要你补充。回复后我会立即填入并生成最终版本。
+        </div>
+      `;
+    }, 800));
+  }
+
+  return { start, reset };
+})();
+
+// ===== Demo 4: 多轮指代消解 =====
+const demo4 = (function() {
+  const dialog = [
+    { type: 'user', text: '帮我生成一份内审简历，刘孟嵩，在校生' },
+    { type: 'ai', text: '已为你生成简历草稿（doc_001 · v1），包含基本信息和章节模板。', trace: '识别 task=generate, doc_type=resume<br>创建 doc_001, focus=doc_001' },
+    { type: 'state', update: 'doc_001: resume v1 [active]\nfocus: doc_001\nstyle: 默认' },
+
+    { type: 'user', text: '把<u>第二段</u>改得更<u>正式</u>一些' },
+    { type: 'ai', text: '已将"教育背景"段调整为更正式的措辞（doc_001 · v2）。', trace: '指代消解：<br>"第二段" → focus.doc_001 · section[1]<br>"更正式" → 风格调整<br>类型：延续型漂移 → 当前文档版本+1' },
+    { type: 'state', update: 'doc_001: resume v2 [active]\nfocus: doc_001 · 教育背景段\nstyle: 正式' },
+
+    { type: 'user', text: '帮我基于<u>这个</u>再写一份<u>求职信</u>给对方公司' },
+    { type: 'ai', text: '已基于简历内容创建求职信（doc_002 · v1），引用了简历的核心信息。当前焦点已切到求职信。', trace: '指代消解：<br>"这个" → focus.doc_001 (简历)<br>类型：派生型漂移<br>新建 doc_002, derived_from=doc_001' },
+    { type: 'state', update: 'doc_001: resume v2 [active]\ndoc_002: cover_letter v1 [active]\n  ↳ derived_from: doc_001\nfocus: doc_002\nstyle: 正式（继承）' },
+
+    { type: 'user', text: '回到<u>简历</u>，<u>那个证书</u>改成初级会计师' },
+    { type: 'ai', text: '已切回简历（doc_001），将证书字段更新为"初级会计师"（doc_001 · v3）。', trace: '指代消解：<br>"简历" → 文档类型匹配 → doc_001<br>"那个证书" → doc_001.证书字段<br>类型：替换型漂移到 doc_001 + 延续型编辑' },
+    { type: 'state', update: 'doc_001: resume v3 [active]\n  ↳ 证书: 初级会计师\ndoc_002: cover_letter v1 [active]\nfocus: doc_001\nstyle: 正式' }
+  ];
+
+  let timers = [];
+
+  function reset() {
+    timers.forEach(t => clearTimeout(t));
+    timers = [];
+    document.getElementById('d4-chat').innerHTML = '<div class="placeholder" style="padding: 100px 0;">点击"播放对话"开始</div>';
+    document.getElementById('d4-state').innerHTML = '<div class="state-panel-title">会话状态对象</div><div style="color: var(--text-tertiary); padding: 50px 0; text-align: center; font-size: 11px;">状态会随对话实时更新</div>';
+  }
+
+  function start() {
+    reset();
+    document.getElementById('d4-chat').innerHTML = '';
+    document.getElementById('d4-state').innerHTML = '<div class="state-panel-title">会话状态对象</div><div style="color: var(--text-tertiary); padding: 50px 0; text-align: center; font-size: 11px;">等待对话开始...</div>';
+
+    let delay = 600;
+    dialog.forEach((msg, idx) => {
+      timers.push(setTimeout(() => {
+        if (msg.type === 'state') {
+          updateState(msg.update);
+        } else {
+          addMessage(msg);
+        }
+      }, delay));
+      delay += msg.type === 'state' ? 400 : (msg.type === 'ai' ? 1400 : 1200);
+    });
+  }
+
+  function addMessage(msg) {
+    const chat = document.getElementById('d4-chat');
+    const div = document.createElement('div');
+    div.className = 'chat-msg msg-' + msg.type;
+    if (msg.type === 'user') {
+      div.innerHTML = '<div class="bubble">' + msg.text + '</div>';
+    } else {
+      div.innerHTML = '<div class="bubble">' + msg.text + '</div>';
+      if (msg.trace) {
+        div.innerHTML += '<div class="resolution-trace"><strong>消解过程：</strong><br>' + msg.trace + '</div>';
+      }
+    }
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function updateState(text) {
+    const lines = text.split('\n');
+    let html = '<div class="state-panel-title">会话状态对象（实时更新）</div>';
+    lines.forEach((line, idx) => {
+      html += '<div class="state-line ' + (idx === lines.length - 1 ? 'updated' : '') + '">' + escapeHtml(line) + '</div>';
+    });
+    document.getElementById('d4-state').innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  return { start, reset };
+})();
+</script>
+
+</body>
+</html>
