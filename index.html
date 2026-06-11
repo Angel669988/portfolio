@@ -886,6 +886,212 @@ body {
 }
 
 
+/* ===== Demo 6 · Token 成本计算器 ===== */
+.demo6-calculator {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.demo6-sliders {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.slider-group {
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  border: 0.5px solid var(--border);
+}
+
+.slider-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.slider-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  font-family: "SF Mono", Monaco, monospace;
+}
+
+.slider-value-unit {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.slider-input {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  outline: none;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.slider-input::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.slider-hint {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.cost-display {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  text-align: center;
+}
+
+.cost-cell {
+  padding: 8px;
+}
+
+.cost-cell-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.cost-cell-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: "SF Mono", Monaco, monospace;
+  transition: color 0.4s;
+}
+
+.cost-cell-value.tier-low {
+  color: var(--success);
+}
+
+.cost-cell-value.tier-mid {
+  color: var(--warning);
+}
+
+.cost-cell-value.tier-high {
+  color: var(--accent);
+}
+
+.cost-cell-detail {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.decision-card {
+  margin-top: 18px;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--text-tertiary);
+  transition: border-color 0.4s, background 0.4s;
+}
+
+.decision-card.tier-low {
+  border-left-color: var(--success);
+  background: #ecf5ee;
+}
+
+.decision-card.tier-mid {
+  border-left-color: var(--warning);
+  background: #fef9ec;
+}
+
+.decision-card.tier-high {
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.decision-tier {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.decision-tier.tier-low { color: var(--success); }
+.decision-tier.tier-mid { color: var(--warning); }
+.decision-tier.tier-high { color: var(--accent); }
+
+.decision-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.decision-content {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.decision-content strong {
+  color: var(--text-primary);
+}
+
+.demo6-disclaimer {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.demo6-disclaimer strong {
+  color: var(--text-secondary);
+  font-style: normal;
+}
+
+
 /* ===== 底部 ===== */
 .footer {
   margin-top: 80px;
@@ -1397,6 +1603,88 @@ body {
 </section>
 
 
+<!-- ===== Demo 6 · Token 成本计算器 ===== -->
+<section class="section">
+  <div class="section-eyebrow">PART 02 · 产品判断 · DEMO 6</div>
+  <h2 class="section-title">Token 成本的数量级思维</h2>
+  <p class="section-desc">Token 成本不是工程细节，是产品命脉。同样的产品，参数变一点点，成本量级可能跃迁——直接影响"做免费版/付费版/限频"的产品决策。拖动滑块亲身感受这种"数量级跃迁"。</p>
+
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-number">DEMO 06</div>
+      <div class="demo-title">用滑块感受成本如何驱动产品决策</div>
+      <div class="demo-judgement">
+        <strong>我的判断：</strong>PM 不需要会算精确成本，但必须懂"数量级"。<strong>数量级正确比精度高 10% 更值钱</strong>——因为产品决策只看量级，不看精度。这是高级 AI PM 的核心思维之一。
+      </div>
+    </div>
+
+    <div class="demo6-calculator">
+      <div class="demo6-sliders">
+        <div class="slider-group">
+          <div class="slider-label">活跃用户规模</div>
+          <div class="slider-value">
+            <span id="d6-users-val">1000</span>
+            <span class="slider-value-unit">人</span>
+          </div>
+          <input type="range" min="0" max="100" value="20" class="slider-input" id="d6-users-slider" oninput="demo6.update()">
+          <div class="slider-hint">DAU · 每日活跃用户数</div>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-label">人均使用频次</div>
+          <div class="slider-value">
+            <span id="d6-freq-val">5</span>
+            <span class="slider-value-unit">次/天</span>
+          </div>
+          <input type="range" min="1" max="30" value="5" class="slider-input" id="d6-freq-slider" oninput="demo6.update()">
+          <div class="slider-hint">每个用户每天调用 Agent 的次数</div>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-label">任务平均复杂度</div>
+          <div class="slider-value">
+            <span id="d6-complexity-val">中</span>
+            <span class="slider-value-unit"><span id="d6-token-val">15K</span> token/次</span>
+          </div>
+          <input type="range" min="0" max="3" value="1" class="slider-input" id="d6-complexity-slider" oninput="demo6.update()">
+          <div class="slider-hint">改写 / 单文档 / 长文档 / 多轮Agent</div>
+        </div>
+      </div>
+
+      <div class="cost-display">
+        <div class="cost-cell">
+          <div class="cost-cell-label">单次任务成本</div>
+          <div class="cost-cell-value" id="d6-cost-single">¥0.84</div>
+          <div class="cost-cell-detail">按主流模型 2026 定价估算</div>
+        </div>
+        <div class="cost-cell">
+          <div class="cost-cell-label">日成本</div>
+          <div class="cost-cell-value" id="d6-cost-daily">¥4,200</div>
+          <div class="cost-cell-detail">用户数 × 频次 × 单次成本</div>
+        </div>
+        <div class="cost-cell">
+          <div class="cost-cell-label">月成本</div>
+          <div class="cost-cell-value" id="d6-cost-monthly">¥126,000</div>
+          <div class="cost-cell-detail">月度运营成本量级</div>
+        </div>
+      </div>
+
+      <div class="decision-card" id="d6-decision">
+        <div class="decision-tier" id="d6-decision-tier">中等成本区</div>
+        <div class="decision-title" id="d6-decision-title">需要平衡免费策略与付费转化</div>
+        <div class="decision-content" id="d6-decision-content">
+          月成本进入十万级——<strong>这是 AI 工具型产品最常见的成本区间</strong>。这个量级下的产品决策：完全免费会持续亏损；需要"轻量免费 + 高频限制 + 进阶付费"的分层策略。同时必须做基础的省 token 优化——历史压缩、KV Cache 复用、分层模型调用。
+        </div>
+      </div>
+
+      <div class="demo6-disclaimer">
+        <strong>诚实标注：</strong>本计算器是基于行业经验的"数量级估算"，不是精确财务模型。模型价格按 Qwen Max 等主流模型 2026 年估算（输入 ¥0.04/1K · 输出 ¥0.12/1K），实际成本会因模型选型、企业折扣、缓存命中率、RAG 触发频率等因素浮动 30-50%。<strong>这个 Demo 的核心价值不是精确数字，是让你感受"参数变化如何触发产品决策的跃迁"</strong>。
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- ===== 底部 ===== -->
 <div class="footer">
   <p><strong>Angel</strong> · AI Native PM @ 通义千问</p>
@@ -1771,6 +2059,124 @@ const demo5 = (function() {
   }
 
   return { start, reset };
+})();
+
+// ===== Demo 6: Token 成本计算器 =====
+const demo6 = (function() {
+  // 用户规模档位映射（非线性，覆盖从初创到大规模）
+  const userScale = [50, 100, 200, 500, 1000, 2000, 5000, 10000, 30000, 100000, 300000];
+  
+  // 任务复杂度档位
+  const complexity = [
+    { name: '改写', tokens: 5000, desc: '单段编辑' },
+    { name: '中', tokens: 15000, desc: '单文档生成' },
+    { name: '重', tokens: 50000, desc: '长文档/分段生成' },
+    { name: '极重', tokens: 200000, desc: '多轮 Agent 任务' }
+  ];
+
+  // 主流模型价格（¥ / 1K token）
+  const INPUT_PRICE = 0.04;
+  const OUTPUT_PRICE = 0.12;
+  // 输出 token 通常占总 token 10-15%
+  const OUTPUT_RATIO = 0.12;
+
+  // 产品决策分层规则
+  const decisionTiers = [
+    {
+      max: 10000,  // 月成本 < 1万
+      tier: 'low',
+      label: '低成本区',
+      title: '可以激进探索市场',
+      content: '月成本万级以下——<strong>产品决策自由度最高</strong>。可以做完全免费版抢占用户、可以无限制开放体验、可以激进 A/B 测试。这个阶段的核心目标是 PMF 验证，不用过度焦虑成本。<strong>反而要警惕："因为没有成本压力而过度功能化"</strong>——产品克制比成本控制更重要。'
+    },
+    {
+      max: 100000,  // 月成本 < 10 万
+      tier: 'mid',
+      label: '中等成本区',
+      title: '需要平衡免费策略与付费转化',
+      content: '月成本进入十万级——<strong>这是 AI 工具型产品最常见的成本区间</strong>。这个量级下的产品决策：完全免费会持续亏损；需要"轻量免费 + 高频限制 + 进阶付费"的分层策略。同时必须做基础的省 token 优化——历史压缩、KV Cache 复用、分层模型调用。'
+    },
+    {
+      max: 1000000,  // 月成本 < 100 万
+      tier: 'high',
+      label: '高成本警戒区',
+      title: '必须深度优化 + 强付费墙',
+      content: '月成本逼近百万级——<strong>这是大多数 AI 产品死掉的地方</strong>。产品决策必须强硬：核心功能上付费墙、免费版严格限频、深度做 token 优化（KV Cache 命中率 > 80%、引用化大型工具返回、动态降级到小模型）。<strong>同时必须重新审视：这个产品的单用户 LTV 是否真的支撑这个成本</strong>。'
+    },
+    {
+      max: Infinity,  // 月成本 >= 100 万
+      tier: 'high',
+      label: '极高成本区 · 商业模型重审',
+      title: '产品形态可能需要根本性调整',
+      content: '月成本进入百万级以上——<strong>仅靠产品策略已经救不了</strong>。这个量级要么是 B 端定制场景（客单价支撑得起），要么是产品形态本身有问题。<strong>PM 必须主动提出"是否应该限制核心场景"或"是否应该转向 B 端"</strong>——而不是继续往里加功能。这个阶段坚持 C 端免费 = 公司财务事故。'
+    }
+  ];
+
+  function update() {
+    const userIdx = parseInt(document.getElementById('d6-users-slider').value);
+    const freq = parseInt(document.getElementById('d6-freq-slider').value);
+    const compIdx = parseInt(document.getElementById('d6-complexity-slider').value);
+
+    // 用户规模：非线性映射，让滑块手感更自然
+    const users = userScale[Math.min(Math.floor(userIdx / 10), userScale.length - 1)];
+    const comp = complexity[compIdx];
+    const totalTokens = comp.tokens;
+    const inputTokens = totalTokens * (1 - OUTPUT_RATIO);
+    const outputTokens = totalTokens * OUTPUT_RATIO;
+
+    // 单次成本
+    const singleCost = (inputTokens / 1000) * INPUT_PRICE + (outputTokens / 1000) * OUTPUT_PRICE;
+    const dailyCost = singleCost * users * freq;
+    const monthlyCost = dailyCost * 30;
+
+    // 更新显示
+    document.getElementById('d6-users-val').textContent = formatNum(users);
+    document.getElementById('d6-freq-val').textContent = freq;
+    document.getElementById('d6-complexity-val').textContent = comp.name;
+    document.getElementById('d6-token-val').textContent = formatTokens(totalTokens);
+
+    document.getElementById('d6-cost-single').textContent = '¥' + singleCost.toFixed(2);
+    document.getElementById('d6-cost-daily').textContent = '¥' + formatMoney(dailyCost);
+    document.getElementById('d6-cost-monthly').textContent = '¥' + formatMoney(monthlyCost);
+
+    // 决策分层
+    const decision = decisionTiers.find(t => monthlyCost < t.max);
+    const tierClass = 'tier-' + decision.tier;
+    
+    const monthlyEl = document.getElementById('d6-cost-monthly');
+    const dailyEl = document.getElementById('d6-cost-daily');
+    monthlyEl.className = 'cost-cell-value ' + tierClass;
+    dailyEl.className = 'cost-cell-value ' + tierClass;
+
+    const card = document.getElementById('d6-decision');
+    card.className = 'decision-card ' + tierClass;
+    document.getElementById('d6-decision-tier').textContent = decision.label;
+    document.getElementById('d6-decision-tier').className = 'decision-tier ' + tierClass;
+    document.getElementById('d6-decision-title').textContent = decision.title;
+    document.getElementById('d6-decision-content').innerHTML = decision.content;
+  }
+
+  function formatNum(n) {
+    if (n >= 10000) return (n / 10000).toFixed(1) + '万';
+    return n.toLocaleString();
+  }
+
+  function formatTokens(t) {
+    if (t >= 1000) return (t / 1000).toFixed(0) + 'K';
+    return t;
+  }
+
+  function formatMoney(n) {
+    if (n >= 1000000) return (n / 10000).toFixed(0) + '万';
+    if (n >= 10000) return (n / 10000).toFixed(1) + '万';
+    if (n >= 1000) return n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return n.toFixed(2);
+  }
+
+  // 初始化
+  setTimeout(update, 100);
+
+  return { update };
 })();
 
 </script>
