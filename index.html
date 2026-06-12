@@ -423,6 +423,318 @@ body {
   color: var(--success);
 }
 
+/* ===== Demo 2 · 静默 vs 显式（含 Tab + 交付时）===== */
+
+/* Tab 切换 */
+.d2-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.d2-tab {
+  background: transparent;
+  border: none;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: inherit;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.d2-tab:hover {
+  color: var(--text-secondary);
+}
+
+.d2-tab-active {
+  color: var(--accent) !important;
+  border-bottom-color: var(--accent) !important;
+}
+
+.d2-stage {
+  display: none;
+}
+
+.d2-stage-active {
+  display: block;
+}
+
+.d2-stage-intro {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--text-tertiary);
+}
+
+/* 阶段 2: 交付时 */
+.d2-delivery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.d2-delivery-panel {
+  border-radius: var(--radius-md);
+  padding: 20px;
+  position: relative;
+  min-height: 450px;
+}
+
+.d2-delivery-bad {
+  background: #fff5f0;
+  border: 0.5px solid #e8c4b0;
+}
+
+.d2-delivery-good {
+  background: #f0f7f2;
+  border: 0.5px solid #b8d4be;
+}
+
+.d2-delivery-tag {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: var(--bg);
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.d2-delivery-bad .d2-delivery-tag {
+  color: var(--accent);
+}
+
+.d2-delivery-good .d2-delivery-tag {
+  color: var(--success);
+}
+
+.d2-delivery-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+/* 简陋交付的孤独文件卡片 */
+.d2-file-card-empty {
+  background: var(--bg-card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 32px 20px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.d2-file-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.d2-file-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+  font-family: "SF Mono", Monaco, monospace;
+}
+
+.d2-file-download-btn {
+  display: inline-block;
+  padding: 6px 16px;
+  background: var(--text-primary);
+  color: var(--bg-card);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.d2-delivery-problems {
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+}
+
+.d2-problem-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.d2-problem-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.d2-problem-list li {
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding: 3px 0;
+  padding-left: 12px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.d2-problem-list li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* 完整交付包 */
+.d2-package {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.d2-package-block {
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  border: 0.5px solid var(--border);
+}
+
+.d2-package-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 3px solid var(--success);
+}
+
+.d2-package-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.d2-package-main > div:nth-child(2) {
+  flex: 1;
+}
+
+.d2-package-block-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.d2-package-block-meta {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.d2-download-inline {
+  flex-shrink: 0;
+  font-size: 11px;
+  padding: 4px 12px;
+}
+
+.d2-package-todo {
+  border-left: 3px solid var(--warning);
+}
+
+.d2-package-suggest {
+  border-left: 3px solid var(--info);
+}
+
+.d2-package-actions {
+  border-left: 3px solid var(--text-tertiary);
+}
+
+.d2-package-block-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.d2-block-icon {
+  font-size: 13px;
+}
+
+.d2-block-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.d2-package-block-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.d2-package-block-list li {
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding: 2px 0;
+  line-height: 1.6;
+}
+
+.d2-todo-field {
+  font-weight: 600;
+  color: var(--text-primary);
+  background: #fef3d7;
+  padding: 0 5px;
+  border-radius: 3px;
+}
+
+.d2-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.d2-action-btn {
+  background: var(--bg-secondary);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-secondary);
+  border: 0.5px solid var(--border);
+  cursor: default;
+}
+
+.d2-delivery-insight {
+  margin-top: 18px;
+  padding: 16px 20px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.d2-delivery-insight strong {
+  color: var(--text-primary);
+}
+
+@media (max-width: 720px) {
+  .d2-delivery-grid {
+    grid-template-columns: 1fr;
+  }
+  .d2-action-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ===== Demo 2 · 静默 vs 显式 ===== */
 .demo2-grid {
   display: grid;
@@ -1476,44 +1788,145 @@ body {
   </div>
 </section>
 
-<!-- ===== Demo 2 · 静默猜测 vs 显式标注 ===== -->
+<!-- ===== Demo 2 · 透明度哲学（生成时 + 交付时）===== -->
 <section class="section">
   <div class="section-eyebrow">PART 02 · 产品判断 · DEMO 2</div>
-  <h2 class="section-title">AI 静默猜测 vs 显式标注</h2>
-  <p class="section-desc">用户的输入信息不完整时，AI 该怎么处理？这两种处理方式 6 秒后会看到完全不同的结局。</p>
+  <h2 class="section-title">透明度哲学贯穿全流程</h2>
+  <p class="section-desc">"透明度 &gt; 完美感"不只是生成时的事——它要贯穿到交付的最后一公里。点击下方两个 Tab，看同一哲学在两个阶段的不同演绎。</p>
 
   <div class="demo-card">
     <div class="demo-header">
       <div class="demo-number">DEMO 02</div>
-      <div class="demo-title">不确定信息的两种处理哲学</div>
+      <div class="demo-title">生成时不藏决策 · 交付时不只给文件</div>
       <div class="demo-judgement">
-        <strong>我的判断：</strong>让用户看见 AI 在猜什么，比让 AI 看起来很笃定，更可靠。<strong>透明度 &gt; 完美感</strong>——这是我做 AI 产品的核心哲学之一。
+        <strong>我的判断：</strong>让用户看见 AI 在猜什么、给用户工具去打磨——这两件事是同一哲学的两个阶段。<strong>AI 是协作者而非代办者</strong>：代办者交付"完成品"，协作者交付"可继续打磨的工作产物"。
       </div>
     </div>
 
-    <div class="demo-controls">
-      <div class="demo-input-display">
-        <strong>用户输入：</strong>"刘孟嵩，在校生，求内审岗位，已取得相关证书"
-      </div>
-      <button class="btn" onclick="demo2.start()">生成简历</button>
-      <button class="btn btn-secondary" onclick="demo2.reset()">重置</button>
+    <div class="d2-tabs">
+      <button class="d2-tab d2-tab-active" id="d2-tab-stage1" onclick="demo2.switchTab(1)">阶段 1 · 生成时</button>
+      <button class="d2-tab" id="d2-tab-stage2" onclick="demo2.switchTab(2)">阶段 2 · 交付时</button>
     </div>
 
-    <div class="demo2-grid">
-      <div class="resume-mock" id="d2-silent">
-        <span class="silent-badge">静默猜测</span>
-        <h4>简历预览</h4>
-        <div id="d2-silent-content">
-          <div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>
+    <!-- 阶段 1: 生成时（原有内容）-->
+    <div id="d2-stage1" class="d2-stage d2-stage-active">
+      <div class="d2-stage-intro">
+        生成过程中——信息不完整时 AI 该怎么处理？
+      </div>
+
+      <div class="demo-controls">
+        <div class="demo-input-display">
+          <strong>用户输入：</strong>"刘孟嵩，在校生，求内审岗位，已取得相关证书"
+        </div>
+        <button class="btn" onclick="demo2.start()">生成简历</button>
+        <button class="btn btn-secondary" onclick="demo2.reset()">重置</button>
+      </div>
+
+      <div class="demo2-grid">
+        <div class="resume-mock" id="d2-silent">
+          <span class="silent-badge">静默猜测</span>
+          <h4>简历预览</h4>
+          <div id="d2-silent-content">
+            <div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>
+          </div>
+        </div>
+
+        <div class="resume-mock" id="d2-explicit">
+          <span class="explicit-badge">显式标注</span>
+          <h4>简历预览</h4>
+          <div id="d2-explicit-content">
+            <div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 阶段 2: 交付时（新增）-->
+    <div id="d2-stage2" class="d2-stage">
+      <div class="d2-stage-intro">
+        生成完成后——AI 该怎么把成果交付给用户？
+      </div>
+
+      <div class="d2-delivery-grid">
+        <div class="d2-delivery-panel d2-delivery-bad">
+          <div class="d2-delivery-tag">代办者姿态</div>
+          <div class="d2-delivery-title">只给一个文件</div>
+
+          <div class="d2-file-card-empty">
+            <div class="d2-file-icon">📄</div>
+            <div class="d2-file-name">resume.docx</div>
+            <div class="d2-file-download-btn">下载</div>
+          </div>
+
+          <div class="d2-delivery-problems">
+            <div class="d2-problem-title">⚠ 用户拿到后的真实困境</div>
+            <ul class="d2-problem-list">
+              <li>不知道 AI 替自己做了哪些决定</li>
+              <li>不知道哪些是占位符需要填</li>
+              <li>看到问题想改，不知道怎么改</li>
+              <li>想回退到上一版？没有上一版</li>
+              <li>整体不满意？只能从头再来</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="d2-delivery-panel d2-delivery-good">
+          <div class="d2-delivery-tag">协作者姿态</div>
+          <div class="d2-delivery-title">完整交付包</div>
+
+          <div class="d2-package">
+            <div class="d2-package-block d2-package-main">
+              <div class="d2-package-icon">📄</div>
+              <div>
+                <div class="d2-package-block-title">resume.docx · 主文件</div>
+                <div class="d2-package-block-meta">已生成 · v3 · 2 分钟前</div>
+              </div>
+              <div class="d2-file-download-btn d2-download-inline">下载</div>
+            </div>
+
+            <div class="d2-package-block d2-package-todo">
+              <div class="d2-package-block-header">
+                <span class="d2-block-icon">⚠</span>
+                <span class="d2-block-label">待你确认的 3 处</span>
+              </div>
+              <ul class="d2-package-block-list">
+                <li><span class="d2-todo-field">学校</span> · 字段缺失，请补充</li>
+                <li><span class="d2-todo-field">证书</span> · AI 猜测为 CIA，请确认</li>
+                <li><span class="d2-todo-field">实习</span> · 已用校园项目代替</li>
+              </ul>
+            </div>
+
+            <div class="d2-package-block d2-package-suggest">
+              <div class="d2-package-block-header">
+                <span class="d2-block-icon">💡</span>
+                <span class="d2-block-label">我建议你打磨</span>
+              </div>
+              <ul class="d2-package-block-list">
+                <li>自我评价段落可以更具体</li>
+                <li>技能描述建议加量化数据</li>
+              </ul>
+            </div>
+
+            <div class="d2-package-block d2-package-actions">
+              <div class="d2-package-block-header">
+                <span class="d2-block-icon">🔄</span>
+                <span class="d2-block-label">操作选项</span>
+              </div>
+              <div class="d2-action-grid">
+                <div class="d2-action-btn">回退上一版</div>
+                <div class="d2-action-btn">切换风格</div>
+                <div class="d2-action-btn">重新生成某段</div>
+                <div class="d2-action-btn">在线预览</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="resume-mock" id="d2-explicit">
-        <span class="explicit-badge">显式标注</span>
-        <h4>简历预览</h4>
-        <div id="d2-explicit-content">
-          <div style="text-align: center; color: var(--text-tertiary); padding: 80px 0; font-size: 12px;">点击"生成简历"开始</div>
-        </div>
+      <div class="d2-delivery-insight">
+        <strong>关键洞察 · 交付物 ≠ 文件</strong><br>
+        交付物 = <strong>工作产物</strong>——主文件只是其中一个组件。<strong>待确认事项</strong>让用户看见 AI 的决策点；<strong>修改建议</strong>让 AI 主动暴露不确定；<strong>操作选项</strong>把控制权还给用户。<br><br>
+        这种交付方式背后的产品哲学和阶段 1 一脉相承——<strong>"让用户看见、能修改、有掌控"——这就是 AI 协作者的姿态</strong>。
       </div>
     </div>
   </div>
@@ -1966,9 +2379,16 @@ const demo1 = (function() {
   return { start, reset };
 })();
 
-// ===== Demo 2: 静默 vs 显式 =====
+// ===== Demo 2: 透明度哲学（生成时 + 交付时）=====
 const demo2 = (function() {
   let timers = [];
+
+  function switchTab(stage) {
+    document.getElementById('d2-tab-stage1').classList.toggle('d2-tab-active', stage === 1);
+    document.getElementById('d2-tab-stage2').classList.toggle('d2-tab-active', stage === 2);
+    document.getElementById('d2-stage1').classList.toggle('d2-stage-active', stage === 1);
+    document.getElementById('d2-stage2').classList.toggle('d2-stage-active', stage === 2);
+  }
 
   function reset() {
     timers.forEach(t => clearTimeout(t));
@@ -2050,7 +2470,7 @@ const demo2 = (function() {
     }, 800));
   }
 
-  return { start, reset };
+  return { start, reset, switchTab };
 })();
 
 // ===== Demo 4: 多轮指代消解 =====
