@@ -1513,6 +1513,108 @@ body {
 }
 
 
+/* ===== PART 03 · 评测体系 ===== */
+.eval-section-intro {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  max-width: 720px;
+  line-height: 1.7;
+}
+
+.eval-principle {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.eval-principle strong {
+  color: var(--text-primary);
+}
+
+.eval-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 0.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+
+.eval-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  min-width: 640px;
+  background: var(--bg-card);
+}
+
+.eval-table th,
+.eval-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 0.5px solid var(--border);
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.eval-table thead th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.eval-table thead th:first-child {
+  width: 88px;
+}
+
+.eval-table .eval-layer-name {
+  font-weight: 600;
+}
+
+.eval-layer-1 { color: var(--info); }
+.eval-layer-2 { color: var(--warning); }
+.eval-layer-3 { color: var(--success); }
+
+.eval-table .row-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.eval-table tr:last-child td {
+  border-bottom: none;
+}
+
+.eval-cover-yes { color: var(--success); font-weight: 600; }
+.eval-cover-partial { color: var(--warning); font-weight: 600; }
+
+.eval-table-note {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+  padding: 14px 18px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-style: italic;
+}
+
+.eval-table-note strong {
+  color: var(--text-secondary);
+  font-style: normal;
+}
+
+@media (max-width: 720px) {
+  .eval-table { font-size: 11.5px; }
+}
+
 /* ===== 底部 ===== */
 .footer {
   margin-top: 80px;
@@ -2259,6 +2361,85 @@ body {
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+
+<!-- ===== PART 03 · 评测体系 ===== -->
+<section class="section">
+  <div class="section-eyebrow">PART 03 · 评测体系</div>
+  <h2 class="section-title">AI 产品的评测,是产品定义的最高形式</h2>
+  <p class="eval-section-intro">前面的架构和判断,最终都要靠评测来验证有没有做对。这是我做 AI 产品时最花心思、也认为最被低估的一块——把"什么算好"从主观感觉,变成可打分、可回归、可迭代的体系。</p>
+
+  <div class="eval-principle">
+    <strong>第一性原理:</strong>传统产品里,PRD 是产品定义的最高形式;AI 产品里,<strong>评测集才是</strong>。因为"好"是什么,只有当它被打分,才真正存在——<strong>没有评测集的 AI 需求,等于没定义</strong>。
+  </div>
+
+  <h3 style="font-size:17px;font-weight:600;margin-bottom:14px;">三层评测体系</h3>
+
+  <div class="eval-table-wrap">
+    <table class="eval-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th><span class="eval-layer-name eval-layer-1">① 能力评测</span><br>Capability</th>
+          <th><span class="eval-layer-name eval-layer-2">② 任务评测</span><br>Task</th>
+          <th><span class="eval-layer-name eval-layer-3">③ 体验评测</span><br>Experience</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-label">测什么</td>
+          <td>单个任务做得对不对</td>
+          <td>完成整个任务的质量、端到端好不好</td>
+          <td>用户是否真的受益</td>
+        </tr>
+        <tr>
+          <td class="row-label">形式</td>
+          <td>输入-期望输出样本集,算准确率</td>
+          <td>真实任务场景下评估最终产出</td>
+          <td>行为数据、留存/采用率、A/B</td>
+        </tr>
+        <tr>
+          <td class="row-label">例子</td>
+          <td>意图识别准确率、字段提取准确率</td>
+          <td>生成简历整体质量、Agent 多步成功率</td>
+          <td>取走率、编辑率、重新生成率、放弃率</td>
+        </tr>
+        <tr>
+          <td class="row-label">怎么评</td>
+          <td>规则 / 自动比对</td>
+          <td>LLM-as-Judge 或人工</td>
+          <td>线上数据 + 实验</td>
+        </tr>
+        <tr>
+          <td class="row-label">离真实价值</td>
+          <td>远</td>
+          <td>中</td>
+          <td>近(最真实)</td>
+        </tr>
+        <tr>
+          <td class="row-label">成本 / 速度</td>
+          <td>低 · 快</td>
+          <td>中</td>
+          <td>高 · 慢</td>
+        </tr>
+        <tr>
+          <td class="row-label">难点</td>
+          <td>分高 ≠ 用户满意</td>
+          <td>"质量"难定义</td>
+          <td>慢、难归因</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="eval-table-note">
+    <strong>关键认知:不要只做第一层。</strong>大量团队止步于"准确率 95%",但准确率高不代表用户满意。高阶的标志是能把评测推到第三层,并关注<strong>层与层之间的错位</strong>——比如准确率很高、但用户编辑率也很高,说明你测的"对",不是用户要的"对"。
+  </div>
+
+  <div style="margin-top:24px;" class="eval-principle">
+    <strong>我在实践中最花心思的两件事:</strong>一是用<strong>线上真实分布去校准评测集</strong>——评测集的 query 分布必须匹配线上真实分布,不符就重建,否则离线分数再高也预测不了线上;二是<strong>把 bad case 按周回流进评测集</strong>并约束两周内优化上线,让评测集成为持续生长的系统,而不是建完就过期的静态文档。
   </div>
 </section>
 
