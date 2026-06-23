@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 产品评测 Eval · 知识结构图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f4f1ea;
+    color: #2c2c2c;
+    line-height: 1.6;
+    padding: 32px 20px;
+  }
+  .page { max-width: 1080px; margin: 0 auto; }
+  .main-title { text-align: center; margin-bottom: 6px; }
+  .main-title h1 { font-size: 26px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.5px; }
+  .main-title .sub { font-size: 13px; color: #8a8276; margin-top: 6px; }
+
+  /* 真实经历 vs 认知储备 图例 */
+  .legend {
+    display: flex; gap: 18px; justify-content: center; align-items: center;
+    margin: 18px 0 26px; font-size: 12.5px; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 4px; }
+  .dot-real { background: #4a7a4a; }
+  .dot-know { background: #b08442; }
+  .legend-item b { color: #2c2c2c; }
+  .legend-item span { color: #8a8276; }
+
+  .module {
+    background: #fffdf8; border: 0.5px solid #e3ddd0; border-radius: 14px;
+    padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .module-head {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px;
+    border-bottom: 1px solid #eee7d8; padding-bottom: 10px;
+  }
+  .module-num {
+    font-size: 12px; font-weight: 700; color: #fff; background: #b08442;
+    border-radius: 6px; padding: 3px 9px; flex-shrink: 0;
+  }
+  .module-num.real { background: #4a7a4a; }
+  .module-title { font-size: 17px; font-weight: 700; color: #1a1a1a; }
+  .module-hint { font-size: 12px; color: #a39a88; margin-left: auto; }
+
+  .grid { display: grid; gap: 12px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card { border-radius: 10px; padding: 13px 15px; font-size: 12.5px; position: relative; }
+  .card .ct { font-weight: 700; font-size: 13.5px; margin-bottom: 5px; }
+  .card .cd { color: #555; line-height: 1.55; }
+  .card .cd b { color: #2c2c2c; }
+
+  /* 真实经历=绿，认知储备=琥珀 */
+  .c-real  { background: #eef5ee; border: 0.5px solid #c3d8c3; }
+  .c-real .ct { color: #3d6b3d; }
+  .c-know  { background: #fbf3e6; border: 0.5px solid #e8d4ad; }
+  .c-know .ct { color: #a8762a; }
+  .c-blue  { background: #eef4fa; border: 0.5px solid #cdddec; }
+  .c-blue .ct { color: #3a6ea5; }
+  .c-gray  { background: #f3f1ec; border: 0.5px solid #ddd7c9; }
+  .c-gray .ct { color: #6b6356; }
+
+  .badge {
+    position: absolute; top: 10px; right: 12px;
+    font-size: 9.5px; font-weight: 700; padding: 1px 6px; border-radius: 4px;
+  }
+  .badge-real { background: #4a7a4a; color: #fff; }
+  .badge-know { background: #d9b873; color: #5c4711; }
+
+  .three-layer { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; margin: 6px 0; }
+  .layer-col {
+    padding: 14px 15px; border: 0.5px solid #cdddec;
+  }
+  .layer-col:nth-child(1) { background: #f0f5fb; border-radius: 10px 0 0 10px; }
+  .layer-col:nth-child(2) { background: #eaf1f8; border-left: none; }
+  .layer-col:nth-child(3) { background: #e3edf6; border-left: none; border-radius: 0 10px 10px 0; }
+  .layer-col .lc-t { font-weight: 700; font-size: 13px; color: #3a6ea5; margin-bottom: 4px; }
+  .layer-col .lc-row { font-size: 11.5px; color: #555; margin-top: 5px; }
+  .layer-col .lc-row b { color: #2c2c2c; }
+  .axis-hint {
+    text-align: center; font-size: 11px; color: #999185; margin: 8px 0 4px;
+  }
+
+  .flow-row { display: flex; align-items: stretch; gap: 8px; margin: 6px 0; flex-wrap: nowrap; }
+  .flow-node {
+    flex: 1; background: #eef5ee; border: 1px solid #c3d8c3; border-radius: 8px;
+    padding: 11px 10px; font-size: 12px; text-align: center;
+  }
+  .flow-node .fn-t { font-weight: 700; color: #3d6b3d; }
+  .flow-node .fn-d { font-size: 10.5px; color: #666; margin-top: 3px; }
+  .flow-arrow { display: flex; align-items: center; color: #4a7a4a; font-size: 16px; font-weight: 700; }
+
+  .note { background: #f3f1ec; border-radius: 8px; padding: 11px 14px; font-size: 12px; color: #6b6356; margin-top: 12px; line-height: 1.6; }
+  .note b { color: #a8762a; }
+  .gold { background: #fdf6e3; border-left: 3px solid #c9a227; border-radius: 6px; padding: 11px 15px; font-size: 12.5px; color: #6b5219; margin-top: 12px; }
+  .gold b { color: #5c4711; }
+  .real-hl { background: #eef5ee; border-left: 3px solid #4a7a4a; border-radius: 6px; padding: 11px 15px; font-size: 12.5px; color: #3d5c3d; margin-top: 12px; }
+  .real-hl b { color: #2c4a2c; }
+  .section-note { font-size: 12px; color: #999185; margin: 4px 0 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="main-title">
+    <h1>AI 产品评测 Eval · 知识结构图</h1>
+    <div class="sub">Agent 架构纵向贯穿线 · 贯穿 L1→L6 · 我做 AI 产品最花心思、也认为最被低估的一块</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot dot-real"></span><b>真实经历</b><span>—— 我亲手做过、可写进简历、面试能说"我做了"</span></div>
+    <div class="legend-item"><span class="legend-dot dot-know"></span><b>认知储备</b><span>—— 我了解、面试用来延伸/显视野，说"我理解/业界做法"</span></div>
+  </div>
+
+  <!-- 第一性原理 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">00</span>
+      <span class="module-title">第一性原理</span>
+      <span class="module-hint">面试开场能定调的一句</span>
+    </div>
+    <div class="gold"><b>传统产品里，PRD 是产品定义的最高形式；AI 产品里，评测集才是。</b>因为"好"是什么，只有当它被打分，才真正存在——<b>没有评测集的 AI 需求，等于没定义。</b></div>
+  </div>
+
+  <!-- 模块一：三层评测 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num real">01</span>
+      <span class="module-title">三层评测体系</span>
+      <span class="module-hint">越往下越接近真实价值，也越难</span>
+    </div>
+    <div class="axis-hint">能力 ───→ 任务 ───→ 体验　｜　离用户价值：远 → 近　｜　成本：低 → 高</div>
+    <div class="three-layer">
+      <div class="layer-col">
+        <div class="lc-t">① 能力评测</div>
+        <div class="lc-row"><b>测：</b>单点做得对不对</div>
+        <div class="lc-row"><b>法：</b>输入-期望输出算准确率</div>
+        <div class="lc-row"><b>例：</b>意图识别、字段提取准确率</div>
+        <div class="lc-row" style="color:#3d6b3d;"><b>✓ 我做过</b></div>
+      </div>
+      <div class="layer-col">
+        <div class="lc-t">② 任务评测</div>
+        <div class="lc-row"><b>测：</b>端到端任务质量</div>
+        <div class="lc-row"><b>法：</b>LLM-as-Judge 或人工</div>
+        <div class="lc-row"><b>例：</b>生成简历整体质量</div>
+        <div class="lc-row" style="color:#3d6b3d;"><b>✓ 我做过</b></div>
+      </div>
+      <div class="layer-col">
+        <div class="lc-t">③ 体验评测</div>
+        <div class="lc-row"><b>测：</b>用户是否真受益</div>
+        <div class="lc-row"><b>法：</b>行为指标 / A/B / 留存</div>
+        <div class="lc-row"><b>例：</b>取走率、编辑率</div>
+        <div class="lc-row" style="color:#a8762a;"><b>△ 定义+观测行为指标，非严格 A/B</b></div>
+      </div>
+    </div>
+    <div class="gold"><b>关键认知：不要只做第一层。</b>准确率高 ≠ 用户满意。高阶标志是推到第三层，并关注<b>层与层之间的错位</b>——准确率高但编辑率也高 = 测的"对"不是用户要的"对"。</div>
+  </div>
+
+  <!-- 模块二：我真做的闭环 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num real">02</span>
+      <span class="module-title">我真实运转过的 Eval 闭环</span>
+      <span class="module-hint">这一块是简历核心 · 全部"我做了"</span>
+    </div>
+    <div class="flow-row">
+      <div class="flow-node"><div class="fn-t">建评测集</div><div class="fn-d">基于线上真实<br>用户 query</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><div class="fn-t">分布校准★</div><div class="fn-d">匹配线上真实分布<br>不符则重建</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><div class="fn-t">标注管理</div><div class="fn-d">规范+打分档位+锚点<br>易偏差双人交叉</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><div class="fn-t">bad case 回流</div><div class="fn-d">周会同步+入集<br>2周内优化上线</div></div>
+    </div>
+    <div class="real-hl"><b>两大亮点（面试重点打）：</b>① 用<b>线上真实分布校准评测集</b>——直击"离线-线上脱节"痛点；② <b>bad case 周回流 + 2 周优化时限</b>——让评测集成为持续生长的系统，不是建完就死的静态文档。<br><b>这两条是装不出来的流程纪律，是我 Eval 经历里含金量最高的部分。</b></div>
+  </div>
+
+  <!-- 模块三：主观质量量化 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">03</span>
+      <span class="module-title">主观质量怎么量化</span>
+      <span class="module-hint">人工是我做的，LLM-as-Judge 是认知</span>
+    </div>
+    <div class="grid grid-3">
+      <div class="card c-real">
+        <span class="badge badge-real">我做过</span>
+        <div class="ct">人工评测</div>
+        <div class="cd">最准但慢贵。<b>我的做法：规范+打分档位+锚点示例，易偏差样本双人交叉验证一致性。</b>做金标准。</div>
+      </div>
+      <div class="card c-know">
+        <span class="badge badge-know">认知</span>
+        <div class="ct">LLM-as-Judge</div>
+        <div class="cd">快、可规模化。三个坑：位置偏见 / 自我偏好 / 打分漂移。<b>核心：Judge 必须先被 judge（人工金标准校准）</b></div>
+      </div>
+      <div class="card c-know">
+        <span class="badge badge-know">认知</span>
+        <div class="ct">规则 / 自动指标</div>
+        <div class="cd">最快最稳，只能测"形"（长度、格式、关键词），测不了"质"</div>
+      </div>
+    </div>
+    <div class="note"><b>组合而非三选一：</b>规则测硬指标 · Judge 测大批量主观 · 人工做金标准和校准。｜ <b>我的延伸话术：</b>"如果要规模化，我的思路是用现有人工金标准去校准一个 Judge"——用"如果…我的思路是"，不夸大成做过。</div>
+  </div>
+
+  <!-- 模块四：线上线下对齐 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">04</span>
+      <span class="module-title">线上线下对齐</span>
+      <span class="module-hint">三根因里我解决了两个</span>
+    </div>
+    <div class="grid grid-3">
+      <div class="card c-real">
+        <span class="badge badge-real">已解决</span>
+        <div class="ct">根因① 分布不一致</div>
+        <div class="cd">评测集 query 分布≠线上。<b>我的解法：线上 query 建集 + 分布校准。</b></div>
+      </div>
+      <div class="card c-know">
+        <span class="badge badge-know">认知</span>
+        <div class="ct">根因② 指标不一致</div>
+        <div class="cd">离线准确率 ≠ 线上留存/采用。应选与北极星相关性高的代理指标。</div>
+      </div>
+      <div class="card c-real">
+        <span class="badge badge-real">已对抗</span>
+        <div class="ct">根因③ 静态过期</div>
+        <div class="cd">评测集会过期。<b>我的 bad case 周回流正是对抗这个。</b></div>
+      </div>
+    </div>
+    <div class="gold"><b>进阶认知：离线 ≠ 线上对立，是漏斗。</b>离线（快便宜）高效止损拦掉明显的坏 → 灰度/A&#47;B（慢贵真实）验证价值 → 全量+监控抓长尾。离线作用是"高效止损"，把线上实验资源留给值得验证的版本。</div>
+  </div>
+
+  <!-- 模块五：业界实践 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">05</span>
+      <span class="module-title">业界最佳实践 · 可引用的外部参照</span>
+      <span class="module-hint">面试垫视野用，引一两个即可</span>
+    </div>
+    <div class="grid grid-4">
+      <div class="card c-gray">
+        <div class="ct">OpenAI Evals</div>
+        <div class="cd">把 eval 当"单元测试"，每次改动跑回归——与我的 bad case 回流同思路</div>
+      </div>
+      <div class="card c-gray">
+        <div class="ct">Anthropic</div>
+        <div class="cd">做好 eval 比训模型还难，因为定义"什么是好"最难——印证"瓶颈不是技术是产品定义"</div>
+      </div>
+      <div class="card c-gray">
+        <div class="ct">LLM-as-Judge</div>
+        <div class="cd">已成行业标准（MT-Bench 等），共识"Judge 要先被 judge"</div>
+      </div>
+      <div class="card c-gray">
+        <div class="ct">北极星+护栏</div>
+        <div class="cd">北极星衡量价值（留存/采用），护栏防副作用（有害率/延迟/成本）</div>
+      </div>
+    </div>
+    <div class="note"><b>用法姿势（三段式，诚实）：</b>自己做的（实）→ 业界印证（显视野）→ 下一步方向（显成长性）。每段都诚实，合起来既落地又有视野还在进步。</div>
+  </div>
+
+  <!-- 大问题回答框架 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">06</span>
+      <span class="module-title">"你怎么看 AI 产品评测" · 高度回答框架</span>
+    </div>
+    <div class="grid grid-3">
+      <div class="card c-blue"><div class="ct">① 本质是产品定义</div><div class="cd">没评测集 = 没定义，"好"必须被打分才存在</div></div>
+      <div class="card c-blue"><div class="ct">② 要分层要对齐</div><div class="cd">三层越往下越真实；离线线上是漏斗不是对立；分布要匹配</div></div>
+      <div class="card c-blue"><div class="ct">③ 最难的是定义不是技术</div><div class="cd">Judge 解决规模，但定义好/校准/维护是 PM 的活</div></div>
+    </div>
+    <div class="real-hl"><b>最后落到我自己的实践：</b>用线上真实分布校准评测集 + bad case 周回流让评测集持续生长。——认知有高度，实践有落地，两头都占。</div>
+  </div>
+
+  <div style="text-align:center; font-size:11.5px; color:#a39a88; margin-top:8px;">
+    Eval 知识结构图 · 绿色=真经历（进简历）· 琥珀=认知储备（面试延伸）· 配合架构图三条纵向线一起记忆
+  </div>
+
+</div>
+</body>
+</html>

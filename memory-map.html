@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory 系统 · 知识结构图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f4f1ea;
+    color: #2c2c2c;
+    line-height: 1.6;
+    padding: 32px 20px;
+  }
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .main-title {
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .main-title h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+  }
+  .main-title .sub {
+    font-size: 13px;
+    color: #8a8276;
+    margin-top: 6px;
+  }
+  .boundary-banner {
+    background: #fdf6e3;
+    border: 1px dashed #d9b873;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin: 18px 0 28px;
+    font-size: 12.5px;
+    color: #8a6d2f;
+    text-align: center;
+  }
+  .boundary-banner strong { color: #6b5219; }
+
+  .module {
+    background: #fffdf8;
+    border: 0.5px solid #e3ddd0;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .module-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #eee7d8;
+    padding-bottom: 10px;
+  }
+  .module-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: #b08442;
+    border-radius: 6px;
+    padding: 3px 9px;
+    flex-shrink: 0;
+  }
+  .module-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .module-hint {
+    font-size: 12px;
+    color: #a39a88;
+    margin-left: auto;
+  }
+
+  /* 通用卡片网格 */
+  .grid { display: grid; gap: 12px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    border-radius: 10px;
+    padding: 13px 15px;
+    font-size: 12.5px;
+  }
+  .card .ct { font-weight: 700; font-size: 13.5px; margin-bottom: 5px; }
+  .card .cd { color: #555; line-height: 1.55; }
+  .card .cd b { color: #2c2c2c; }
+
+  /* 配色：时间三层 */
+  .c-blue  { background: #eef4fa; border: 0.5px solid #cdddec; }
+  .c-blue .ct { color: #3a6ea5; }
+  .c-amber { background: #fbf3e6; border: 0.5px solid #e8d4ad; }
+  .c-amber .ct { color: #b07d2c; }
+  .c-green { background: #eef5ee; border: 0.5px solid #c9ddc9; }
+  .c-green .ct { color: #4a7a4a; }
+  .c-gray  { background: #f3f1ec; border: 0.5px solid #ddd7c9; }
+  .c-gray .ct { color: #6b6356; }
+  .c-red   { background: #fbeeec; border: 0.5px solid #ecc9c2; }
+  .c-red .ct { color: #b0503c; }
+
+  .arrow-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin: 14px 0; flex-wrap: wrap;
+  }
+  .flow-node {
+    background: #fff; border: 1px solid #d9d2c2; border-radius: 8px;
+    padding: 9px 13px; font-size: 12.5px; text-align: center; min-width: 90px;
+  }
+  .flow-node .fn-t { font-weight: 700; color: #2c2c2c; }
+  .flow-node .fn-d { font-size: 10.5px; color: #888; margin-top: 2px; }
+  .flow-arrow { color: #b08442; font-size: 16px; font-weight: 700; }
+
+  .label-tag {
+    display: inline-block; font-size: 10.5px; font-weight: 600;
+    padding: 1px 7px; border-radius: 4px; margin-bottom: 6px;
+  }
+  .tag-easy { background: #e3efe3; color: #4a7a4a; }
+  .tag-hard { background: #f5dcd6; color: #b0503c; }
+  .tag-core { background: #b0503c; color: #fff; }
+
+  .note {
+    background: #f3f1ec; border-radius: 8px; padding: 11px 14px;
+    font-size: 12px; color: #6b6356; margin-top: 12px; line-height: 1.6;
+  }
+  .note b { color: #b07d2c; }
+  .gold {
+    background: #fdf6e3; border-left: 3px solid #c9a227; border-radius: 6px;
+    padding: 11px 15px; font-size: 12.5px; color: #6b5219; margin-top: 12px;
+  }
+  .gold b { color: #5c4711; }
+
+  .section-note { font-size: 12px; color: #999185; margin: 4px 0 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="main-title">
+    <h1>Memory 系统 · 知识结构图</h1>
+    <div class="sub">Agent 架构纵向贯穿线 · 主要作用于 L1→L3 输入端 · 让产品有"熟人感"</div>
+  </div>
+
+  <div class="boundary-banner">
+    <strong>定位提醒：</strong>以下是体系认知。真实情况——我的产品用对话系统通用 memory 能力，只有单会话工作记忆，跨会话未做。懂得深是为了判断准，不等于"做过 memory 系统"。
+  </div>
+
+  <!-- 模块一 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">01</span>
+      <span class="module-title">分类体系 · 两种分法</span>
+    </div>
+
+    <div class="section-note">按时间跨度分（记多久）</div>
+    <div class="grid grid-3">
+      <div class="card c-blue">
+        <div class="ct">短期 / 工作记忆</div>
+        <div class="cd">单会话 context 内，对话结束就没。<b>我的产品在这一层。</b>（= 状态对象/多轮管理）</div>
+      </div>
+      <div class="card c-amber">
+        <div class="ct">长期记忆</div>
+        <div class="cd">跨对话持久化，存外部、用时检索。<b>真正难的部分，多数团队没做好。</b></div>
+      </div>
+      <div class="card c-green">
+        <div class="ct">用户档案</div>
+        <div class="cd">跨会话的结构化稳定认知——他是谁、习惯什么、历史行为。</div>
+      </div>
+    </div>
+
+    <div class="section-note" style="margin-top:16px;">按内容分（记什么）· 认知科学启发，面试显专业</div>
+    <div class="grid grid-3">
+      <div class="card c-gray">
+        <div class="ct">情景记忆</div>
+        <div class="cd">"发生过什么"——具体事件带时间。<b>= 日记</b></div>
+      </div>
+      <div class="card c-gray">
+        <div class="ct">语义记忆</div>
+        <div class="cd">"关于用户的稳定事实"——从情景提炼的结论。<b>= 从日记总结的关于你的事实</b></div>
+      </div>
+      <div class="card c-gray">
+        <div class="ct">程序记忆</div>
+        <div class="cd">"学会怎么更好服务"——个性化做事方式。<b>最高级，多数产品没做到</b></div>
+      </div>
+    </div>
+    <div class="note"><b>提炼链：</b>情景 → 语义（从"发生了什么"总结出"这意味着什么"）是 memory 核心动作之一。</div>
+  </div>
+
+  <!-- 模块二 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">02</span>
+      <span class="module-title">生命周期 · 五个动作</span>
+      <span class="module-hint">每个动作都是一个可能出问题的点</span>
+    </div>
+    <div class="arrow-row">
+      <div class="flow-node"><div class="fn-t">写入</div><div class="fn-d">什么该记<br>重要性筛选</div></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-node"><div class="fn-t">存储</div><div class="fn-d">结构化 vs<br>向量化</div></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-node"><div class="fn-t">检索</div><div class="fn-d">何时调哪条<br>相关性★</div></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-node"><div class="fn-t">更新</div><div class="fn-d">变了信谁<br>冲突消解</div></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-node"><div class="fn-t">遗忘</div><div class="fn-d">清过时的<br>防记忆库变脏</div></div>
+    </div>
+    <div class="note">五动作是一个<b>循环</b>。memory 所有难题都分布在这五个环节里——其中"检索"和"更新"最难。</div>
+  </div>
+
+  <!-- 模块三 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">03</span>
+      <span class="module-title">跨会话这条线为什么难跨 · 四道坎</span>
+      <span class="module-hint">短期记忆简单（就在 context 里）· 跨会话难在这四件事</span>
+    </div>
+    <div class="grid grid-2">
+      <div class="card c-amber">
+        <span class="label-tag tag-hard">坎 1</span>
+        <div class="ct">抽取</div>
+        <div class="cd">不能存整段对话，要用 LLM 从对话提炼该记的（情景→语义）。<b>抽错就记错。</b></div>
+      </div>
+      <div class="card c-amber">
+        <span class="label-tag tag-hard">坎 2</span>
+        <div class="ct">存储</div>
+        <div class="cd">结构化（精确但只能存预设字段）vs 向量化（灵活但检索易污染）。<b>成熟做法两者混用。</b></div>
+      </div>
+      <div class="card c-red">
+        <span class="label-tag tag-core">坎 3 · 最核心</span>
+        <div class="ct">检索相关性</div>
+        <div class="cd">调太多→Lost in the Middle 淹没当前；调错→乱记；调出过时记忆自信用错→<b>比不记更糟</b>。"记住不难，难在对的时候想起对的事"</div>
+      </div>
+      <div class="card c-amber">
+        <span class="label-tag tag-hard">坎 4</span>
+        <div class="ct">更新与遗忘</div>
+        <div class="cd">记忆会过期，新旧冲突难自动检测，记忆库会越来越脏。</div>
+      </div>
+    </div>
+    <div class="gold"><b>关键产品洞察：</b>产品不做跨会话往往是<b>安全的默认</b>——检索没做好时，记错比不记更伤体验。"判断当前做不好不如不做"本身就是一个产品观点。</div>
+  </div>
+
+  <!-- 模块四 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">04</span>
+      <span class="module-title">三个核心难题 · 技术细节</span>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card c-gray">
+        <div class="ct">检索相关性</div>
+        <div class="cd">一路打补丁：<br>① 语义相似度（相似≠相关）<br>② +时间衰减 recency<br>③ +重要性加权 importance<br>④ 查提炼后的洞察，非原始流水账</div>
+      </div>
+      <div class="card c-gray">
+        <div class="ct">冲突消解</div>
+        <div class="cd">多数系统最弱：<br>① 难自动发现冲突<br>② 信谁——默认信新的，但要区分<b>"永久偏好改变" vs "一次性临时需求"</b><br>业界无好的通用解</div>
+      </div>
+      <div class="card c-gray">
+        <div class="ct">短期→长期提升</div>
+        <div class="cd">实时提升（不遗漏但贵）<br>vs <b>会话后批量提升</b>（用 LLM 通读总结，有全局视角，多数成熟做法用这个）</div>
+      </div>
+    </div>
+
+    <div class="gold"><b>面试金句：</b>"记住"和"检索"大家都做，<b>"更新和冲突消解"是分水岭</b>——要判断用户是真变了还是这次特殊，目前没有好的自动化方案。</div>
+    <div class="note"><b>引用资本：</b>斯坦福 Generative Agents 论文把检索系统化为"相关性 + 时间新近 + 重要性"三因子加权。 ｜ <b>连接我的产品：</b>"单会话记得、之后忘" = 缺了"会话结束时把工作记忆提炼并持久化"这一步。</div>
+  </div>
+
+  <!-- 模块五 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num">05</span>
+      <span class="module-title">应用层判断 + 诚实话术</span>
+      <span class="module-hint">复用 RAG 心智：底层不是我做的，但怎么用好是我的活</span>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card c-green">
+        <div class="ct">① 什么该记</div>
+        <div class="cd">业务决策。行业/文档风格偏好该记，一次性内容不该记</div>
+      </div>
+      <div class="card c-green">
+        <div class="ct">② 何时调用</div>
+        <div class="cd">应用层决策。简单任务不调，个性化才调，避免污染上下文</div>
+      </div>
+      <div class="card c-green">
+        <div class="ct">③ 用错代价</div>
+        <div class="cd">决定要不要用。没把握做好前，记错比不记更伤体验</div>
+      </div>
+      <div class="card c-green">
+        <div class="ct">④ 体验底线</div>
+        <div class="cd">记错能否纠正？用户能否看到/删除被记内容（隐私合规）</div>
+      </div>
+    </div>
+
+    <div class="gold"><b>最值钱的一句：</b>把"没做跨会话"从事实，转化为"懂克制、懂权衡"的产品判断——<b>"正因为我理解它多难，才判断暂时不做。"</b> 认知是为判断服务，不是为证明做过。</div>
+  </div>
+
+  <div style="text-align:center; font-size:11.5px; color:#a39a88; margin-top:8px;">
+    Memory 知识结构图 · 配合架构图三条纵向线（Eval · 可观测性 · Memory）一起记忆
+  </div>
+
+</div>
+</body>
+</html>
