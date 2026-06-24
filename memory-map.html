@@ -140,6 +140,36 @@
   .gold b { color: #5c4711; }
 
   .section-note { font-size: 12px; color: #999185; margin: 4px 0 14px; }
+
+  /* 版图专用 */
+  .module-num.map { background: #6b4c9a; }
+  .layer-band {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px;
+  }
+  .layer-band .lb {
+    background: #f0ecf6; border: 0.5px solid #d6cae8; border-radius: 9px; padding: 11px 13px; font-size: 12px;
+  }
+  .layer-band .lb-t { font-weight: 700; color: #6b4c9a; font-size: 12.5px; margin-bottom: 3px; }
+  .layer-band .lb-d { color: #555; font-size: 11.5px; line-height: 1.5; }
+  .school {
+    border-radius: 10px; padding: 13px 15px; font-size: 12px; border: 0.5px solid #ddd7c9; background: #fffdf8;
+  }
+  .school .s-h { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .school .s-t { font-weight: 700; font-size: 13.5px; color: #2c2c2c; }
+  .school .s-tag { font-size: 9.5px; font-weight: 700; padding: 1px 7px; border-radius: 4px; }
+  .tag-hot { background: #b0503c; color: #fff; }
+  .tag-classic { background: #cdddec; color: #3a6ea5; }
+  .tag-known { background: #d9b873; color: #5c4711; }
+  .tag-research { background: #e0dced; color: #6b4c9a; }
+  .school .s-d { color: #555; line-height: 1.55; }
+  .school .s-d b { color: #2c2c2c; }
+  .debate-box {
+    background: #faf6ee; border: 0.5px solid #e3d9c4; border-radius: 9px; padding: 13px 16px; margin-top: 12px;
+  }
+  .debate-box .db-title { font-weight: 700; font-size: 12.5px; color: #a8762a; margin-bottom: 8px; }
+  .debate-box ul { margin: 0; padding-left: 18px; }
+  .debate-box li { font-size: 11.5px; color: #5c5346; line-height: 1.7; margin-bottom: 3px; }
+  .debate-box li b { color: #2c2c2c; }
 </style>
 </head>
 <body>
@@ -152,6 +182,53 @@
 
   <div class="boundary-banner">
     <strong>定位提醒：</strong>以下是体系认知。真实情况——我的产品用对话系统通用 memory 能力，只有单会话工作记忆，跨会话未做。懂得深是为了判断准，不等于"做过 memory 系统"。
+  </div>
+
+  <!-- 模块零 · 领域版图 -->
+  <div class="module">
+    <div class="module-head">
+      <span class="module-num map">00</span>
+      <span class="module-title">领域版图 · 先看全貌再看细节</span>
+      <span class="module-hint">memory 一词指三层，四个流派在讨论不同层</span>
+    </div>
+
+    <div class="section-note">memory 其实指三个层面（流派"对不上"常因为在讲不同层）</div>
+    <div class="layer-band">
+      <div class="lb"><div class="lb-t">A · 上下文内</div><div class="lb-d">单次对话/任务内，context 怎么放/压/不超限（工作记忆）</div></div>
+      <div class="lb"><div class="lb-t">B · 跨会话</div><div class="lb-d">对话之间，下次还记得（长期记忆，多数人说的"memory系统"）</div></div>
+      <div class="lb"><div class="lb-t">C · 任务内</div><div class="lb-d">Agent 跑几十步，中间状态/子结果怎么记</div></div>
+    </div>
+
+    <div class="section-note" style="margin-top:14px;">四大流派（不互斥，是分层 + 组合）</div>
+    <div class="grid grid-2">
+      <div class="school">
+        <div class="s-h"><span class="s-t">① 认知科学派</span><span class="s-tag tag-classic">经典</span></div>
+        <div class="s-d">模拟人脑：情景/语义/程序，三因子检索。代表 Generative Agents。主战场 B。<b>= 我第一次讲的那套。</b>局限：与上下文使用脱节</div>
+      </div>
+      <div class="school">
+        <div class="s-h"><span class="s-t">② 上下文工程派</span><span class="s-tag tag-hot">当前最火</span></div>
+        <div class="s-d">memory = 每轮往 context 放什么。手段：压缩 + 文件系统 + 文件/向量混合 + Agent 自主取。主战场 A+C。局限：偏新未定型</div>
+      </div>
+      <div class="school">
+        <div class="s-h"><span class="s-t">③ 检索增强派</span><span class="s-tag tag-known">坑最熟</span></div>
+        <div class="s-d">RAG-as-Memory：偏好向量化存库语义检索。主战场 B。<b>继承所有 RAG 痛点（相似≠相关/污染/不可控）</b></div>
+      </div>
+      <div class="school">
+        <div class="s-h"><span class="s-t">④ 参数化记忆派</span><span class="s-tag tag-research">研究中</span></div>
+        <div class="s-d">写进模型权重（continual learning/model editing）。生产少用：贵、慢、灾难性遗忘、难撤销</div>
+      </div>
+    </div>
+
+    <div class="debate-box">
+      <div class="db-title">⚠ 当前没定论的争论（前沿，姿态要谦虚）</div>
+      <ul>
+        <li><b>长 context 会不会让 memory 没必要？</b>一派"全塞进去就行"，一派"再长也有中间遗忘+成本"——路线之争</li>
+        <li><b>文件系统 vs 向量库谁是主？</b>文件可控、向量在模糊召回不可替代，边界在摸索</li>
+        <li><b>记忆该自动管理还是 Agent 自主管理？</b>哪个更可靠在演进</li>
+        <li><b>冲突消解 / 遗忘至今无通用解</b>——所有派都没解决好</li>
+      </ul>
+    </div>
+    <div class="gold"><b>一句话版图：</b>重心正从"模拟人脑"转向"上下文工程"，但<b>没有哪派能单独解决，真实系统是分层组合</b>。面试讲流派+趋势+争论，比只知道一种高一层。</div>
   </div>
 
   <!-- 模块一 -->
