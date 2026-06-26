@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scheduled Tasks 上下文隔离机制 Demo v4</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --line: #e6e8ef;
+      --blue: #2f6fed;
+      --blue-soft: #edf4ff;
+      --green: #10a37f;
+      --green-soft: #e9fbf5;
+      --orange: #f59e0b;
+      --orange-soft: #fff7e6;
+      --red: #dc2626;
+      --red-soft: #fff1f1;
+      --purple: #7c3aed;
+      --purple-soft: #f3ecff;
+      --shadow: 0 16px 45px rgba(16, 24, 40, .08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #ecf4ff, transparent 35%), var(--bg);
+    }
+    .app { display: grid; grid-template-columns: 330px 1fr 390px; gap: 18px; min-height: 100vh; padding: 18px; }
+    .panel { background: rgba(255,255,255,.88); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .side { padding: 20px; }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    h2 { font-size: 15px; margin: 22px 0 10px; }
+    p { line-height: 1.6; }
+    .hint { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12px; background: var(--blue-soft); color: #174ea6; border: 1px solid #d6e6ff; }
+    .scenario { width: 100%; text-align: left; border: 1px solid var(--line); background: white; padding: 12px; border-radius: 14px; margin: 8px 0; cursor: pointer; color: var(--text); transition: .16s ease; }
+    .scenario:hover { transform: translateY(-1px); border-color: #bfd4ff; box-shadow: 0 8px 22px rgba(47,111,237,.1); }
+    .scenario.active { background: var(--blue-soft); border-color: #90b7ff; }
+    .scenario .title { font-weight: 700; margin-bottom: 4px; }
+    .scenario .desc { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .chat { display: flex; flex-direction: column; min-width: 0; }
+    .chat-header { display:flex; align-items:center; justify-content:space-between; padding: 16px 18px; border-bottom:1px solid var(--line); background: rgba(255,255,255,.72); }
+    .chat-title { font-weight: 800; }
+    .statebar { display:flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .state { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #f2f4f7; color: #344054; border:1px solid #e4e7ec; }
+    .state.good { background: var(--green-soft); color: #08745f; border-color:#bcf0df; }
+    .state.warn { background: var(--orange-soft); color:#985a00; border-color:#ffe0a3; }
+    .messages { padding: 18px; overflow: auto; height: calc(100vh - 190px); }
+    .msg { max-width: 82%; margin: 0 0 14px; padding: 13px 15px; border-radius: 16px; line-height: 1.55; position: relative; animation: pop .18s ease-out; white-space: pre-line; }
+    @keyframes pop { from { opacity:0; transform: translateY(6px);} to {opacity:1; transform:none;} }
+    .user { margin-left: auto; background: var(--blue); color: white; border-bottom-right-radius: 5px; }
+    .assistant { background: white; border:1px solid var(--line); border-bottom-left-radius: 5px; }
+    .meta-small { display:block; font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .task-card, .cluster-card, .failed-card { max-width: 92%; border-radius: 18px; margin: 16px 0; border: 1px solid; background: white; overflow: hidden; box-shadow: 0 10px 25px rgba(16,24,40,.07); animation: pop .18s ease-out; }
+    .task-card { border-color:#c7dcff; }
+    .failed-card { border-color:#fecaca; }
+    .cluster-card { border-color:#ddd6fe; }
+    .task-top { padding: 13px 15px; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .task-card .task-top { background: var(--blue-soft); }
+    .failed-card .task-top { background: var(--red-soft); }
+    .cluster-card .task-top { background: var(--purple-soft); }
+    .task-name { font-weight: 800; margin-bottom: 4px; }
+    .task-sub { color: var(--muted); font-size: 12px; }
+    .badge { font-size: 12px; padding: 5px 8px; border-radius: 999px; font-weight: 700; white-space: nowrap; }
+    .badge.ok { background: var(--green-soft); color: #067647; }
+    .badge.fail { background: var(--red-soft); color: #b42318; }
+    .badge.merge { background: #ede9fe; color: #5b21b6; }
+    .task-body { padding: 15px; line-height: 1.55; }
+    .task-actions { display:flex; gap:8px; flex-wrap:wrap; padding: 0 15px 15px; }
+    button.action { border: 1px solid var(--line); background: white; color: var(--text); border-radius: 11px; padding: 8px 10px; cursor:pointer; font-size: 13px; }
+    button.action:hover { border-color:#9dbdff; background:#f7faff; }
+    button.primary { background: var(--blue); color:white; border-color: var(--blue); }
+    button.danger { background: var(--red-soft); border-color:#fecaca; color:#b42318; }
+    .task-list { display: grid; gap: 10px; margin-top: 10px; }
+    .task-item { border:1px solid var(--line); border-radius: 14px; padding: 12px; background:#fff; display:grid; grid-template-columns: 1fr auto; gap: 8px; align-items:center; }
+    .task-item-title { font-weight: 700; }
+    .task-item-desc { color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .inputbar { border-top:1px solid var(--line); padding: 12px; background: rgba(255,255,255,.75); display:flex; gap:8px; }
+    .inputbar input { flex:1; border:1px solid var(--line); border-radius: 13px; padding: 12px; font-size:14px; outline:none; }
+    .inputbar input:focus { border-color:#90b7ff; box-shadow:0 0 0 4px rgba(47,111,237,.09); }
+    .inputbar button { border:0; border-radius: 13px; padding: 0 16px; background: var(--blue); color:white; font-weight:700; cursor:pointer; }
+    .inspector { padding: 18px; overflow:auto; max-height: 100vh; }
+    .code { background:#0b1020; color:#d9e2ff; padding: 14px; border-radius: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height:1.55; overflow:auto; white-space: pre-wrap; }
+    .kv { display:grid; grid-template-columns: 125px 1fr; gap:8px; font-size:13px; border-bottom:1px dashed var(--line); padding:8px 0; }
+    .kv .k { color: var(--muted); }
+    .toast { position: fixed; left: 50%; top: 20px; transform: translateX(-50%); background:#111827; color:white; padding: 10px 14px; border-radius: 999px; box-shadow: var(--shadow); display:none; z-index: 10; font-size: 13px; }
+    .toast.show { display:block; animation: fadeToast 2.2s ease forwards; }
+    @keyframes fadeToast { 0%{opacity:0; transform:translate(-50%,-8px)} 12%,82%{opacity:1; transform:translate(-50%,0)} 100%{opacity:0; transform:translate(-50%,-8px)} }
+
+    .route-panel { margin: 12px 15px 15px; border:1px solid #d6e4ff; background:#f8fbff; border-radius:14px; padding:12px; }
+    .route-title { font-weight:800; margin-bottom:8px; }
+    .route-grid { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+    .route-chip { border:1px solid var(--line); border-radius:11px; padding:8px; background:white; font-size:12px; }
+    .route-chip strong { display:block; font-size:13px; margin-bottom:3px; }
+    .route-chip.hit { border-color:#90b7ff; background:var(--blue-soft); }
+    .confidence { height:8px; background:#e5e7eb; border-radius:999px; overflow:hidden; margin-top:8px; }
+    .confidence > div { height:100%; background:var(--blue); border-radius:999px; }
+
+    .method-card { border:1px solid var(--line); border-radius:16px; background:white; margin:12px 0; overflow:hidden; box-shadow:0 8px 22px rgba(16,24,40,.05); }
+    .method-head { padding:13px 14px; display:flex; justify-content:space-between; gap:10px; align-items:center; cursor:pointer; background:#fbfcff; }
+    .method-title { font-weight:800; }
+    .method-tag { font-size:11px; padding:4px 8px; border-radius:999px; background:var(--purple-soft); color:#5b21b6; white-space:nowrap; }
+    .method-body { padding:0 14px 14px; color:#344054; font-size:13px; line-height:1.65; display:none; }
+    .method-card.open .method-body { display:block; }
+    .method-body ul { margin:8px 0 0 18px; padding:0; }
+    .method-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+    .pattern { border:1px solid var(--line); border-radius:13px; padding:10px; background:#fff; }
+    .pattern strong { display:block; margin-bottom:4px; }
+    .framework { display:grid; gap:9px; margin:12px 0; }
+    .framework-step { border:1px solid #ddd6fe; background:#faf7ff; border-radius:14px; padding:11px; display:grid; grid-template-columns:48px 1fr; gap:10px; align-items:start; }
+    .step-letter { width:36px; height:36px; border-radius:12px; background:var(--purple); color:white; display:flex; align-items:center; justify-content:center; font-weight:900; }
+
+    @media (max-width: 1100px) { .app { grid-template-columns: 1fr; } .messages { height: 560px; } .inspector { max-height:none; } }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="app">
+    <aside class="panel side">
+      <span class="pill">⏰ Scheduled Tasks Demo v4</span>
+      <h1>定时任务上下文隔离</h1>
+      <p class="hint">用交互式场景说明：任务准点触发时，模型知道它是任务；任务结果不会污染当前对话主线。</p>
+
+      <h2>场景</h2>
+      <button class="scenario active" data-scenario="normal">
+        <div class="title">1. 单个任务准点插入</div>
+        <div class="desc">用户正在聊 PRD，AI 简报任务插入，但 active_topic 不改变。</div>
+      </button>
+      <button class="scenario" data-scenario="failed">
+        <div class="title">2. 异步任务触发失败</div>
+        <div class="desc">工具超时/权限不足时，展示失败卡片、失败原因、重试与编辑入口。</div>
+      </button>
+      <button class="scenario" data-scenario="multi">
+        <div class="title">3. 多个任务同时触发</div>
+        <div class="desc">10:00 同时触发多个任务时，合并成聚合卡片，避免刷屏打断。</div>
+      </button>
+      <button class="scenario" data-scenario="routing">
+        <div class="title">4. 用户后续追问归因</div>
+        <div class="desc">用户说“展开第二条”指向任务；说“继续刚才 PRD”回到原对话。</div>
+      </button>
+      <button class="scenario" data-scenario="multiRouting">
+        <div class="title">5. 多任务后的目标路由</div>
+        <div class="desc">多个任务聚合后，判断用户下一句是原话题、某个任务、整个任务组还是任务管理。</div>
+      </button>
+      <button class="scenario" data-scenario="methodology">
+        <div class="title">6. 可抽象方法论</div>
+        <div class="desc">把 Scheduled Tasks 抽象成主动事件交互框架：E-CART、设计模式、复用场景。</div>
+      </button>
+
+      <h2>可操作模拟</h2>
+      <button class="scenario" onclick="resetDemo()"><div class="title">重置 Demo</div><div class="desc">恢复到初始聊天状态。</div></button>
+      <button class="scenario" onclick="insertNormalTask()"><div class="title">触发：每日 AI 简报</div><div class="desc">模拟一个成功完成的定时任务。</div></button>
+      <button class="scenario" onclick="insertFailedTask()"><div class="title">触发：失败任务</div><div class="desc">模拟异步任务执行失败。</div></button>
+      <button class="scenario" onclick="insertMultiTask()"><div class="title">触发：多任务聚合</div><div class="desc">模拟多个任务同一时间完成。</div></button>
+    </aside>
+
+    <main class="panel chat">
+      <div class="chat-header">
+        <div>
+          <div class="chat-title">当前会话：Word/PDF Agent PRD 讨论</div>
+          <div class="statebar">
+            <span class="state good" id="activeTopic">active_topic = PRD_Design</span>
+            <span class="state" id="lastSource">last_source = user</span>
+            <span class="state warn" id="pollution">context_pollution = false</span>
+          </div>
+        </div>
+        <span class="pill" id="clock">10:00</span>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="inputbar">
+        <input id="userInput" placeholder="试试输入：第二个展开 / 全部展开 / 继续刚才 PRD / 以后别发了" />
+        <button onclick="sendUserMessage()">发送</button>
+      </div>
+    </main>
+
+    <aside class="panel inspector">
+      <h1>机制说明</h1>
+      <p class="hint">右侧展示当前选中场景的消息协议、路由规则和产品设计要点。</p>
+      <div id="explain"></div>
+      <h2>当前消息元数据</h2>
+      <div class="code" id="metadata"></div>
+    </aside>
+  </div>
+
+<script>
+  const messagesEl = document.getElementById('messages');
+  const explainEl = document.getElementById('explain');
+  const metadataEl = document.getElementById('metadata');
+  const activeTopicEl = document.getElementById('activeTopic');
+  const lastSourceEl = document.getElementById('lastSource');
+  const pollutionEl = document.getElementById('pollution');
+  const inputEl = document.getElementById('userInput');
+  const toastEl = document.getElementById('toast');
+
+  let state = {
+    active_topic: 'PRD_Design',
+    last_source: 'user',
+    context_pollution: false,
+    latest_task_message: null,
+    latest_cluster: null,
+    pre_task_anchor: null,
+    selected_scenario: 'normal'
+  };
+
+  const scenarioExplanations = {
+    normal: {
+      title: '单个任务准点插入',
+      points: [
+        ['消息类型', 'source=scheduled_task，不伪装成 user message。'],
+        ['状态隔离', 'affects_conversation_state=false，所以不覆盖 active_topic。'],
+        ['UI 表达', '任务结果用卡片展示，用户知道这不是模型突然跑题。']
+      ],
+      code: `{
+  "source": "scheduled_task",
+  "role": "assistant",
+  "metadata": {
+    "task_id": "task_ai_daily",
+    "task_run_id": "run_20260625_1000",
+    "trigger_type": "scheduled",
+    "affects_conversation_state": false,
+    "context_policy": {
+      "include_current_conversation": "none",
+      "include_user_memory": true,
+      "include_task_history": true,
+      "include_tools": ["web_search"]
+    }
+  }
+}`
+    },
+    failed: {
+      title: '异步任务触发失败处理',
+      points: [
+        ['失败可见', '不要静默失败，生成 failed task card，说明失败原因。'],
+        ['可恢复', '提供重试、编辑任务、暂停任务、查看日志入口。'],
+        ['不打断', '失败卡片同样不改变 active_topic，也不清空用户当前输入。']
+      ],
+      code: `{
+  "source": "scheduled_task",
+  "status": "failed",
+  "metadata": {
+    "task_id": "task_weekend_events",
+    "task_run_id": "run_20260625_1000_failed",
+    "error_code": "TOOL_TIMEOUT",
+    "error_message": "活动检索工具超时",
+    "retryable": true,
+    "next_retry_policy": "manual_or_next_schedule",
+    "affects_conversation_state": false
+  }
+}`
+    },
+    multi: {
+      title: '多个定时任务同时触发处理',
+      points: [
+        ['聚合优先', '同一时间窗口内多个任务完成，先合并成一个任务中心卡片。'],
+        ['避免刷屏', '短提醒折叠，长简报可展开；用户主动点击再查看全文。'],
+        ['分级通知', 'reminder 用轻通知，briefing 用卡片，monitoring 无变化则可静默。']
+      ],
+      code: `{
+  "source": "scheduled_task_cluster",
+  "cluster_window": "10:00-10:01",
+  "task_runs": [
+    {"task_id": "task_ai_daily", "status": "success"},
+    {"task_id": "task_drink_water", "status": "success"},
+    {"task_id": "task_weekend_events", "status": "failed"}
+  ],
+  "delivery_strategy": "aggregate_card",
+  "affects_conversation_state": false
+}`
+    },
+    routing: {
+      title: '用户后续追问归因',
+      points: [
+        ['指向任务', '“展开第二条”“这个任务重试”绑定 latest_scheduled_task。'],
+        ['回到原话题', '“继续刚才 PRD”绑定 active_topic_before_task。'],
+        ['模糊处理', '低置信度时轻量声明理解，不频繁追问。']
+      ],
+      code: `{
+  "user_message": "展开第二条",
+  "intent_target": "latest_scheduled_task",
+  "confidence": 0.86,
+  "reason": "用户引用了任务卡片中的编号条目"
+}
+{
+  "user_message": "继续刚才 PRD",
+  "intent_target": "current_conversation",
+  "confidence": 0.93,
+  "reason": "用户显式要求回到任务插入前的主话题"
+}`
+    },
+    multiRouting: {
+      title: '多个任务后的目标路由',
+      points: [
+        ['候选目标', 'original_conversation / task_cluster / specific_task / task_management / ambiguous。'],
+        ['判断优先级', '显式编号或任务名 > 管理动作 > 回到原话题 > 语义匹配 > 模糊兜底。'],
+        ['风险策略', '内容追问可带假设回答；暂停、删除、改频率等高影响操作必须确认。']
+      ],
+      code: `{
+  "cluster_id": "cluster_20260625_1000",
+  "pre_task_anchor": {
+    "active_topic_before_task": "PRD_Design",
+    "pending_intent_before_task": "完善 Word/PDF Agent PRD"
+  },
+  "candidate_targets": [
+    "original_conversation",
+    "task_cluster",
+    "task_ai_daily",
+    "task_weekend_events",
+    "task_drink_water",
+    "task_management"
+  ],
+  "routing_priority": [
+    "explicit_click_or_reference",
+    "task_management_intent",
+    "return_to_original_topic",
+    "semantic_task_match",
+    "semantic_original_topic_match",
+    "ambiguous_fallback"
+  ]
+}`
+    },
+    methodology: {
+      title: '可抽象方法论：E-CART 主动事件交互框架',
+      points: [
+        ['核心抽象', '系统主动产生的内容是 Event，不是普通对话消息。'],
+        ['关键问题', '主动事件插入后，用户下一句需要先做归因，再决定回答对象。'],
+        ['复用范围', '适用于定时任务、异步工具结果、文件处理完成、多 Agent 返回、系统通知等。']
+      ],
+      code: `{
+  "framework": "E-CART",
+  "principle": "Event != Conversation",
+  "steps": [
+    {"E": "Event Source：识别事件来源"},
+    {"C": "Context Isolation：隔离事件上下文"},
+    {"A": "Anchor Preservation：保存原会话锚点"},
+    {"R": "Reply Target Routing：用户下一轮输入做目标归因"},
+    {"T": "Trustworthy Fallback：按风险等级兜底"}
+  ],
+  "design_patterns": [
+    "Source-aware Message",
+    "Non-mutating Event Card",
+    "Pre-interruption Anchor",
+    "Context Whitelist",
+    "Event Cluster",
+    "Target Router",
+    "Risk-tiered Confirmation",
+    "Explainable Routing",
+    "UI-assisted Disambiguation"
+  ]
+}`
+    }
+  };
+
+  function renderState() {
+    activeTopicEl.textContent = `active_topic = ${state.active_topic}`;
+    lastSourceEl.textContent = `last_source = ${state.last_source}`;
+    pollutionEl.textContent = `context_pollution = ${state.context_pollution}`;
+  }
+
+  function showToast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.remove('show');
+    void toastEl.offsetWidth;
+    toastEl.classList.add('show');
+  }
+
+  function scrollBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+
+  function addMsg(role, text, meta = {}) {
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.textContent = text;
+    if (meta.note) {
+      const span = document.createElement('span');
+      span.className = 'meta-small';
+      span.textContent = meta.note;
+      div.appendChild(span);
+    }
+    messagesEl.appendChild(div);
+    state.last_source = role === 'user' ? 'user' : 'assistant';
+    renderState();
+    scrollBottom();
+  }
+
+  function addTaskCard({status='success', title, sub, body, taskId, runId, actions=[]}) {
+    const card = document.createElement('div');
+    card.className = status === 'failed' ? 'failed-card' : 'task-card';
+    card.innerHTML = `
+      <div class="task-top">
+        <div>
+          <div class="task-name">${status === 'failed' ? '⚠️' : '⏰'} 定时任务：${title}</div>
+          <div class="task-sub">${sub}</div>
+        </div>
+        <span class="badge ${status === 'failed' ? 'fail' : 'ok'}">${status === 'failed' ? '执行失败' : '已完成'}</span>
+      </div>
+      <div class="task-body">${body}</div>
+      <div class="task-actions"></div>
+    `;
+    const actionBox = card.querySelector('.task-actions');
+    actions.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'action ' + (a.kind || '');
+      btn.textContent = a.label;
+      btn.onclick = a.onClick;
+      actionBox.appendChild(btn);
+    });
+    messagesEl.appendChild(card);
+    state.latest_task_message = { taskId, runId, status, title };
+    state.last_source = 'scheduled_task';
+    state.context_pollution = false;
+    renderState();
+    updateMetadata({source: 'scheduled_task', status, task_id: taskId, task_run_id: runId, affects_conversation_state: false});
+    scrollBottom();
+  }
+
+  function addClusterCard() {
+    const card = document.createElement('div');
+    card.className = 'cluster-card';
+    card.innerHTML = `
+      <div class="task-top">
+        <div>
+          <div class="task-name">🧩 10:00 有 3 个定时任务触发</div>
+          <div class="task-sub">采用聚合卡片，避免连续插入多条消息打断当前 PRD 对话。</div>
+        </div>
+        <span class="badge merge">已聚合</span>
+      </div>
+      <div class="task-body">
+        <div class="task-list">
+          <div class="task-item">
+            <div><div class="task-item-title">每日 AI 简报</div><div class="task-item-desc">状态：成功。点击展开可查看完整简报。</div></div>
+            <button class="action" onclick="expandAiBrief()">展开</button>
+          </div>
+          <div class="task-item">
+            <div><div class="task-item-title">喝水提醒</div><div class="task-item-desc">状态：成功。短提醒仅展示轻量通知。</div></div>
+            <button class="action" onclick="showToast('喝水提醒：起来喝一杯水，活动一下肩颈。')">查看</button>
+          </div>
+          <div class="task-item">
+            <div><div class="task-item-title">北京周末活动推荐</div><div class="task-item-desc">状态：失败。活动检索工具超时，可单独重试。</div></div>
+            <button class="action danger" onclick="retryFailedTask()">重试</button>
+          </div>
+        </div>
+      </div>
+      <div class="task-actions">
+        <button class="action primary" onclick="expandAllTasks()">展开全部</button>
+        <button class="action" onclick="showToast('打开任务管理页：暂停 / 编辑 / 删除任务')">管理任务</button>
+      </div>
+    `;
+    messagesEl.appendChild(card);
+    state.latest_task_message = { taskId: 'task_cluster_1000', runId: 'cluster_20260625_1000', status: 'mixed', title: '多任务聚合' };
+    state.latest_cluster = { cluster_id: 'cluster_20260625_1000', tasks: [
+      {display_index:1, task_id:'task_ai_daily', title:'每日 AI 简报', keywords:['AI','简报','大模型','Agent']},
+      {display_index:2, task_id:'task_weekend_events', title:'北京周末活动推荐', keywords:['周末','活动','北京','室内','展览']},
+      {display_index:3, task_id:'task_drink_water', title:'喝水提醒', keywords:['喝水','健康','提醒']}
+    ]};
+    state.pre_task_anchor = { active_topic_before_task: 'PRD_Design', pending_intent_before_task: '完善 Word/PDF Agent PRD' };
+    state.last_source = 'scheduled_task_cluster';
+    state.context_pollution = false;
+    renderState();
+    updateMetadata({source: 'scheduled_task_cluster', cluster_window: '10:00-10:01', task_runs: [
+      {task_id:'task_ai_daily', status:'success'},
+      {task_id:'task_drink_water', status:'success'},
+      {task_id:'task_weekend_events', status:'failed'}
+    ], delivery_strategy:'aggregate_card', affects_conversation_state:false});
+    scrollBottom();
+  }
+
+  function updateMetadata(obj) { metadataEl.textContent = JSON.stringify(obj, null, 2); }
+
+  function renderExplanation(key) {
+    state.selected_scenario = key;
+    document.querySelectorAll('.scenario[data-scenario]').forEach(btn => btn.classList.toggle('active', btn.dataset.scenario === key));
+    const exp = scenarioExplanations[key];
+    explainEl.innerHTML = `<h2>${exp.title}</h2>` + exp.points.map(([k,v]) => `<div class="kv"><div class="k">${k}</div><div>${v}</div></div>`).join('') + `<h2>协议示例</h2><div class="code">${exp.code}</div>`;
+    metadataEl.textContent = exp.code;
+  }
+
+  function resetDemo() {
+    messagesEl.innerHTML = '';
+    state = { active_topic: 'PRD_Design', last_source: 'user', context_pollution: false, latest_task_message: null, latest_cluster: null, pre_task_anchor: null, selected_scenario: state.selected_scenario || 'normal' };
+    renderState();
+    addMsg('user', '我们继续聊 Word/PDF Agent 的 PRD。重点是：用户上传 PDF 后，怎么做任务路由和上下文管理？');
+    addMsg('assistant', '可以。当前主线是 PRD_Design。我会先围绕上传解析、意图识别、Agent 路由、状态机和异常回退来展开。', {note:'当前会话主线：PRD_Design'});
+    updateMetadata({active_topic: 'PRD_Design', pending_user_intent: '完善 Word/PDF Agent PRD', latest_task_message: null});
+  }
+
+  function insertNormalTask() {
+    renderExplanation('normal');
+    addTaskCard({
+      status: 'success',
+      title: '每日 AI 简报',
+      sub: '计划时间 10:00｜实际触发 10:00｜source=scheduled_task',
+      taskId: 'task_ai_daily',
+      runId: 'run_20260625_1000',
+      body: '1. AI Agent 产品开始从“聊天框”走向“可执行工作流”。<br>2. 文档 Agent 的核心竞争点是上下文管理和可验证输出。<br>3. 多模态入口正在成为 C 端 AI App 的高频增长抓手。',
+      actions: [
+        {label:'展开第二条', kind:'primary', onClick: () => answerTaskSecond()},
+        {label:'暂停任务', onClick: () => showToast('任务已暂停：每日 AI 简报')},
+        {label:'编辑任务', onClick: () => showToast('打开编辑任务面板')}
+      ]
+    });
+  }
+
+  function insertFailedTask() {
+    renderExplanation('failed');
+    addTaskCard({
+      status: 'failed',
+      title: '北京周末活动推荐',
+      sub: '计划时间 10:00｜实际触发 10:00｜error_code=TOOL_TIMEOUT',
+      taskId: 'task_weekend_events',
+      runId: 'run_20260625_1000_failed',
+      body: '<b>任务没有静默失败。</b><br>失败原因：活动检索工具超时，未能获取最新活动数据。<br>处理方式：保留任务历史、展示失败原因，并允许用户手动重试或编辑任务。<br><br><span style="color:#667085">注意：这张失败卡片不会改变当前 active_topic，也不会打断 PRD 对话。</span>',
+      actions: [
+        {label:'重试任务', kind:'primary', onClick: () => retryFailedTask()},
+        {label:'编辑任务', onClick: () => showToast('打开任务编辑：可调整城市、时间、兴趣偏好')},
+        {label:'暂停任务', onClick: () => showToast('任务已暂停：北京周末活动推荐')},
+        {label:'查看日志', onClick: () => showToast('日志：tool_timeout at 10:00:12')}
+      ]
+    });
+  }
+
+  function insertMultiTask() {
+    renderExplanation('multi');
+    addClusterCard();
+  }
+
+  function retryFailedTask() {
+    showToast('正在重试失败任务：北京周末活动推荐');
+    addTaskCard({
+      status: 'success',
+      title: '北京周末活动推荐｜重试成功',
+      sub: 'manual_retry｜source=scheduled_task｜不改变 active_topic',
+      taskId: 'task_weekend_events',
+      runId: 'run_20260625_1003_retry',
+      body: '重试成功。示例结果：<br>1. 周末展览：适合轻松逛展。<br>2. 公园市集：适合半天放松。<br>3. 亲子/家庭友好活动：适合低强度出行。',
+      actions: [
+        {label:'查看详情', kind:'primary', onClick: () => showToast('展开活动详情')},
+        {label:'编辑偏好', onClick: () => showToast('打开偏好设置')}
+      ]
+    });
+  }
+
+  function expandAiBrief() { insertNormalTask(); }
+  function expandAllTasks() { expandAiBrief(); retryFailedTask(); showToast('已展开全部任务结果'); }
+
+  function answerTaskSecond() {
+    state.last_source = 'assistant';
+    renderState();
+    addMsg('assistant', '你追问的是刚才「每日 AI 简报」里的第二条：文档 Agent 的核心竞争点不是“能读文件”，而是能在长文档、多轮对话和复杂任务中稳定维护上下文，并给出可追溯、可验证的输出。', {note:'intent_target = latest_scheduled_task'});
+    updateMetadata({user_intent_target: 'latest_scheduled_task', confidence: 0.86, reason: '用户点击/引用任务卡片中的第二条'});
+  }
+
+  function continuePRD() {
+    state.active_topic = 'PRD_Design';
+    state.last_source = 'assistant';
+    renderState();
+    addMsg('assistant', '继续刚才的 PRD。我们不让定时任务覆盖主线，所以仍然回到 Word/PDF Agent：建议把状态机拆成 upload_received → parse_document → classify_intent → route_agent → generate_answer → verify_citations → fallback。', {note:'intent_target = current_conversation'});
+    updateMetadata({user_intent_target: 'current_conversation', confidence: 0.93, active_topic_before_task: 'PRD_Design'});
+  }
+
+
+  function showRouteDecision(result) {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+    const chips = [
+      ['original_conversation','原会话','回到 PRD_Design'],
+      ['task_cluster','整个任务组','展开/总结全部任务'],
+      ['task_ai_daily','任务 1','每日 AI 简报'],
+      ['task_weekend_events','任务 2','北京周末活动推荐'],
+      ['task_drink_water','任务 3','喝水提醒'],
+      ['task_management','任务管理','暂停/编辑/删除']
+    ];
+    card.innerHTML = `
+      <div class="task-top">
+        <div>
+          <div class="task-name">🎯 Target Router 判断结果</div>
+          <div class="task-sub">用户下一轮输入先归因，再决定是否切换上下文。</div>
+        </div>
+        <span class="badge ok">confidence ${Math.round(result.confidence * 100)}%</span>
+      </div>
+      <div class="route-panel">
+        <div class="route-title">命中目标：${result.label}</div>
+        <div class="route-grid">
+          ${chips.map(([id,title,desc]) => `<div class="route-chip ${id === result.hit ? 'hit' : ''}"><strong>${title}</strong>${desc}</div>`).join('')}
+        </div>
+        <div class="confidence"><div style="width:${Math.round(result.confidence*100)}%"></div></div>
+        <div class="task-sub" style="margin-top:8px">依据：${result.reason}｜策略：${result.strategy}</div>
+      </div>`;
+    messagesEl.appendChild(card);
+    updateMetadata(result.metadata);
+    scrollBottom();
+  }
+
+  function classifyNextTurn(text) {
+    const hasCluster = !!state.latest_cluster;
+    if (text.includes('继续') || text.includes('刚才') || text.toLowerCase().includes('prd') || text.includes('原话题')) {
+      return { hit:'original_conversation', label:'original_conversation', confidence:0.94, reason:'出现“继续/刚才/PRD”等回到原话题信号', strategy:'恢复 pre_task_anchor，不使用任务卡片作为主上下文', metadata:{ target:'original_conversation', active_topic_before_task:'PRD_Design', confidence:0.94 } };
+    }
+    if (text.includes('全部') || text.includes('这几个') || text.includes('所有任务')) {
+      return { hit:'task_cluster', label:'task_cluster', confidence:0.91, reason:'用户指向整个任务集合', strategy:'展开或总结 cluster 内全部任务', metadata:{ target:'task_cluster', cluster_id:'cluster_20260625_1000', action:'expand_all', confidence:0.91 } };
+    }
+    if (text.includes('以后别发') || text.includes('暂停') || text.includes('删除') || text.includes('改到') || text.includes('改成')) {
+      const explicit = text.includes('第二') || text.includes('活动') || text.includes('简报') || text.includes('喝水');
+      return { hit:'task_management', label: explicit ? 'task_management → specific_task' : 'ambiguous task_management', confidence: explicit ? 0.88 : 0.52, reason: explicit ? '管理动作 + 明确任务引用' : '管理动作高影响，但“这个”在多任务场景下不明确', strategy: explicit ? '执行前仍可二次确认' : '必须反问确认，不直接暂停/删除', metadata:{ target: explicit ? 'task_management' : 'ambiguous', action:'pause_or_edit', requires_confirmation:true, confidence: explicit ? 0.88 : 0.52 } };
+    }
+    if (text.includes('第二') || text.includes('周末') || text.includes('活动') || text.includes('室内') || text.includes('展览')) {
+      return { hit:'task_weekend_events', label:'specific_task: 北京周末活动推荐', confidence:text.includes('第二') ? 0.96 : 0.86, reason:text.includes('第二') ? '显式编号“第二个”命中聚合卡片第 2 项' : '语义与“周末活动/室内/展览”任务匹配', strategy:'绑定 task_id=task_weekend_events 后回答', metadata:{ target:'specific_task', task_id:'task_weekend_events', cluster_id:'cluster_20260625_1000', action:'expand', confidence:text.includes('第二') ? 0.96 : 0.86 } };
+    }
+    if (text.includes('第一') || text.includes('AI') || text.includes('简报') || text.includes('大模型')) {
+      return { hit:'task_ai_daily', label:'specific_task: 每日 AI 简报', confidence:text.includes('第一') ? 0.96 : 0.87, reason:'编号/标题/关键词命中 AI 简报任务', strategy:'绑定 task_id=task_ai_daily 后回答', metadata:{ target:'specific_task', task_id:'task_ai_daily', cluster_id:'cluster_20260625_1000', action:'expand', confidence:0.87 } };
+    }
+    if (text.includes('第三') || text.includes('喝水')) {
+      return { hit:'task_drink_water', label:'specific_task: 喝水提醒', confidence:0.93, reason:'编号或关键词命中喝水提醒', strategy:'展示轻量提醒内容', metadata:{ target:'specific_task', task_id:'task_drink_water', cluster_id:'cluster_20260625_1000', action:'view', confidence:0.93 } };
+    }
+    return { hit:'original_conversation', label: hasCluster ? 'ambiguous → prefer_original_conversation' : 'current_conversation', confidence:0.61, reason:'没有明确指向任务；默认不让任务插入改变主线', strategy:'低置信度时保持原会话，提示可用“第几个/任务名”追问', metadata:{ target:'ambiguous', fallback:'prefer_original_topic', confidence:0.61 } };
+  }
+
+  function answerByRoute(result) {
+    showRouteDecision(result);
+    if (result.hit === 'original_conversation') return continuePRD();
+    if (result.hit === 'task_cluster') return expandAllTasks();
+    if (result.hit === 'task_weekend_events') {
+      addMsg('assistant', '我理解你是在追问聚合卡片里的「北京周末活动推荐」。这里可以展开为：1）低强度室内展览；2）商场/书店活动；3）半天可完成的轻松市集。这个回答绑定 task_id=task_weekend_events，不会覆盖 PRD 主线。', {note:'intent_target = specific_task: task_weekend_events'});
+      return;
+    }
+    if (result.hit === 'task_ai_daily') return answerTaskSecond();
+    if (result.hit === 'task_drink_water') {
+      addMsg('assistant', '你指向的是「喝水提醒」。这是轻量 reminder 类型，只展示短提醒：喝一杯水，起身活动一下肩颈。', {note:'intent_target = specific_task: task_drink_water'});
+      return;
+    }
+    if (result.hit === 'task_management') {
+      addMsg('assistant', result.confidence < 0.7 ? '这里有多个定时任务，“这个”不明确。你想暂停哪一个？1. 每日 AI 简报 2. 北京周末活动推荐 3. 喝水提醒' : '这是任务管理意图。为了避免误操作，我会在暂停/编辑前确认具体任务。', {note:'high_impact_action_requires_confirmation'});
+    }
+  }
+
+  function insertMultiRoutingDemo() {
+    renderExplanation('multiRouting');
+    if (!state.latest_cluster) insertMultiTask();
+    showToast('试试输入：第二个展开 / 周末室内 / 全部展开 / 继续刚才 PRD / 以后别发了');
+    updateMetadata({ demo:'multi_task_next_turn_routing', candidate_targets:['original_conversation','task_cluster','task_ai_daily','task_weekend_events','task_drink_water','task_management','ambiguous'] });
+  }
+
+  function sendUserMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    addMsg('user', text);
+    inputEl.value = '';
+
+    // 多任务聚合后：下一轮输入先经过 Target Router，而不是默认接最近一条消息。
+    if (state.latest_cluster || state.selected_scenario === 'multiRouting') {
+      renderExplanation('multiRouting');
+      const route = classifyNextTurn(text);
+      return answerByRoute(route);
+    }
+
+    if (text.includes('展开') || text.includes('第二条') || text.includes('简报')) {
+      renderExplanation('routing');
+      answerTaskSecond();
+    } else if (text.includes('继续') || text.includes('刚才') || text.toLowerCase().includes('prd')) {
+      renderExplanation('routing');
+      continuePRD();
+    } else if (text.includes('重试') || text.includes('失败')) {
+      renderExplanation('failed');
+      retryFailedTask();
+    } else if (text.includes('多个') || text.includes('同时') || text.includes('聚合')) {
+      renderExplanation('multi');
+      insertMultiTask();
+    } else {
+      addMsg('assistant', '我会先保持当前 PRD 主线不变。若你是在追问任务卡片，可以说“展开第二条”；若要回到原话题，可以说“继续刚才 PRD”。', {note:'ambiguous_target，默认不切换 active_topic'});
+      updateMetadata({user_intent_target: 'ambiguous', default_policy: 'keep_current_conversation'});
+    }
+  }
+
+
+  function toggleMethodCard(el) {
+    el.closest('.method-card').classList.toggle('open');
+  }
+
+  function renderMethodologyDemo() {
+    renderExplanation('methodology');
+    const card = document.createElement('div');
+    card.className = 'cluster-card';
+    card.innerHTML = `
+      <div class="task-top">
+        <div>
+          <div class="task-name">📐 方法论总结：E-CART 主动事件交互框架</div>
+          <div class="task-sub">把 Scheduled Tasks 的设计机制抽象成可复用的 AI 产品设计方法。</div>
+        </div>
+        <span class="badge merge">Framework</span>
+      </div>
+      <div class="task-body">
+        <b>一句话：</b>把系统主动产生的内容当成 Event，而不是普通对话；把用户下一轮输入当成需要归因的回复，而不是天然接着最近一句话。
+        <div class="framework">
+          <div class="framework-step"><div class="step-letter">E</div><div><b>Event Source</b><br><span class="task-sub">先识别消息来源：scheduled_task / async_tool_result / agent_result / system_notification。</span></div></div>
+          <div class="framework-step"><div class="step-letter">C</div><div><b>Context Isolation</b><br><span class="task-sub">上下文默认隔离，用白名单决定任务能读取哪些记忆、工具和历史。</span></div></div>
+          <div class="framework-step"><div class="step-letter">A</div><div><b>Anchor Preservation</b><br><span class="task-sub">系统事件插入前，保存 active_topic、last_user_turn 和 pending_intent。</span></div></div>
+          <div class="framework-step"><div class="step-letter">R</div><div><b>Reply Target Routing</b><br><span class="task-sub">用户下一句先路由到原会话、事件簇、具体事件、事件管理或模糊兜底。</span></div></div>
+          <div class="framework-step"><div class="step-letter">T</div><div><b>Trustworthy Fallback</b><br><span class="task-sub">低风险内容追问可带假设回答；暂停、删除、发送等高风险动作必须确认。</span></div></div>
+        </div>
+      </div>
+      <div class="task-actions">
+        <button class="action primary" onclick="showMethodPatterns()">查看设计模式</button>
+        <button class="action" onclick="showMethodScenarios()">查看复用场景</button>
+      </div>
+    `;
+    messagesEl.appendChild(card);
+    updateMetadata({framework:'E-CART', principle:'Event != Conversation', applies_to:['Scheduled Tasks','Async Tool Result','Agent Result','File Processing','System Notification']});
+    scrollBottom();
+  }
+
+  function showMethodPatterns() {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+    const patterns = [
+      ['Source-aware Message','每条消息带 source，不混同处理。'],
+      ['Non-mutating Event Card','事件卡片默认不改变 active_topic。'],
+      ['Pre-interruption Anchor','插入前保存原话题和未完成意图。'],
+      ['Context Whitelist','主动任务只读取授权上下文。'],
+      ['Event Cluster','并发结果先聚合，避免刷屏。'],
+      ['Target Router','用户下一轮输入先判断归属。'],
+      ['Risk-tiered Confirmation','按风险决定假设回答或确认。'],
+      ['Explainable Routing','路由输出证据、置信度和兜底策略。'],
+      ['UI-assisted Disambiguation','用按钮和卡片减少自然语言歧义。']
+    ];
+    card.innerHTML = `
+      <div class="task-top">
+        <div><div class="task-name">🧱 可复用设计模式</div><div class="task-sub">这些模式可以沉淀为 Agent / Tool / Task 类产品的底层设计语言。</div></div>
+        <span class="badge ok">9 patterns</span>
+      </div>
+      <div class="task-body"><div class="method-grid">${patterns.map(([k,v]) => `<div class="pattern"><strong>${k}</strong>${v}</div>`).join('')}</div></div>`;
+    messagesEl.appendChild(card);
+    updateMetadata({design_patterns: patterns.map(p=>p[0])});
+    scrollBottom();
+  }
+
+  function showMethodScenarios() {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+    card.innerHTML = `
+      <div class="task-top">
+        <div><div class="task-name">🔁 可复用场景</div><div class="task-sub">当 AI 产品从线性聊天变成混合事件流时，都可以复用这套框架。</div></div>
+        <span class="badge ok">Reusable</span>
+      </div>
+      <div class="task-body">
+        <div class="method-card open"><div class="method-head" onclick="toggleMethodCard(this)"><div class="method-title">文件处理完成</div><span class="method-tag">async_tool_result</span></div><div class="method-body">文件解析结果插入后，用户说“改一下标题”，需要判断是改文件标题、报告标题，还是原对话标题。</div></div>
+        <div class="method-card open"><div class="method-head" onclick="toggleMethodCard(this)"><div class="method-title">多 Agent 返回方案</div><span class="method-tag">agent_result_cluster</span></div><div class="method-body">多个 Agent 同时返回后，用户说“用第二个方案”，要明确是哪个 Agent、哪个方案、是否涉及执行动作。</div></div>
+        <div class="method-card open"><div class="method-head" onclick="toggleMethodCard(this)"><div class="method-title">邮件草稿生成完成</div><span class="method-tag">tool_status</span></div><div class="method-body">用户说“发出去”属于高风险状态变更，必须确认具体草稿和收件人，不能仅凭最近消息执行。</div></div>
+      </div>`;
+    messagesEl.appendChild(card);
+    updateMetadata({reusable_scenarios:['file_processing_done','multi_agent_results','email_draft_ready','scheduled_tasks','system_notifications']});
+    scrollBottom();
+  }
+
+  document.querySelectorAll('.scenario[data-scenario]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      renderExplanation(btn.dataset.scenario);
+      if (btn.dataset.scenario === 'failed') insertFailedTask();
+      if (btn.dataset.scenario === 'multi') insertMultiTask();
+      if (btn.dataset.scenario === 'normal') insertNormalTask();
+      if (btn.dataset.scenario === 'routing') showToast('在输入框试试：展开第二条 / 继续刚才 PRD');
+      if (btn.dataset.scenario === 'multiRouting') insertMultiRoutingDemo();
+      if (btn.dataset.scenario === 'methodology') renderMethodologyDemo();
+    });
+  });
+
+  inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') sendUserMessage(); });
+
+  resetDemo();
+  renderExplanation('normal');
+</script>
+</body>
+</html>
